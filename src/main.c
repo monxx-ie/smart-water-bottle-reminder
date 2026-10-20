@@ -4,10 +4,12 @@
 #include "semphr.h"
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
 
 static UART_HandleTypeDef huart1;
 static SemaphoreHandle_t uart_mutex;
-static TaskHandle_t h_led, h_btn, h_mon;
+static TaskHandle_t h_led, h_btn, h_sens, h_mon;
 
 extern void xPortSysTickHandler(void);
 
@@ -53,7 +55,7 @@ static void uart_init(void)
 
 static void log_printf(const char *fmt, ...)
 {
-    char buf[96];
+    char buf[128];
     va_list ap;
     va_start(ap, fmt);
     int n = vsnprintf(buf, sizeof buf, fmt, ap);
@@ -65,6 +67,9 @@ static void log_printf(const char *fmt, ...)
     HAL_UART_Transmit(&huart1, (uint8_t *)buf, (uint16_t)n, 100);
     xSemaphoreGive(uart_mutex);
 }
+
+/* prints a value stored in tenths as "-12.3": use with "%s%d.%d" */
+#define F1(v) (((v) < 0) ? "-" : ""), (int)(abs(v) / 10), (int)(abs(v) % 10)
 
 /* ---------- microsecond delay (DWT cycle counter) ---------- */
 static void dwt_init(void)
@@ -85,11 +90,11 @@ static void delay_us(uint32_t us)
 typedef struct {
     GPIO_TypeDef *scl_port; uint16_t scl_pin;
     GPIO_TypeDef *sda_port; uint16_t sda_pin;
-    const char *name;
 } i2c_bus_t;
 
-static const i2c_bus_t bus_a = { GPIOF, GPIO_PIN_1, GPIOF, GPIO_PIN_0, "A (SCL=PF1 SDA=PF0)" };
-static const i2c_bus_t bus_b = { GPIOE, GPIO_PIN_0, GPIOE, GPIO_PIN_1, "B (SCL=PE0 SDA=PE1)" };
+/* bus A: ICM20608 (0x68), AP3216C (0x1E), codec (0x10)   bus B: AHT10 (0x38) */
+static const i2c_bus_t bus_a = { GPIOF, GPIO_PIN_1, GPIOF, GPIO_PIN_0 };
+static const i2c_bus_t bus_b = { GPIOE, GPIO_PIN_0, GPIOE, GPIO_PIN_1 };
 
 #define SCL(b, v)  HAL_GPIO_WritePin((b)->scl_port, (b)->scl_pin, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
 #define SDA(b, v)  HAL_GPIO_WritePin((b)->sda_port, (b)->sda_pin, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
@@ -139,39 +144,219 @@ static int i2c_write(const i2c_bus_t *b, uint8_t byte)
     return ack;
 }
 
-static int i2c_probe(const i2c_bus_t *b, uint8_t addr)
+static uint8_t i2c_read_byte(const i2c_bus_t *b, int ack)
+{
+    uint8_t v = 0;
+    SDA(b, 1);
+    for (int i = 0; i < 8; i++) {
+        delay_us(T_US);
+        SCL(b, 1); delay_us(T_US);
+        v = (uint8_t)((v << 1) | (SDA_READ(b) ? 1 : 0));
+        SCL(b, 0);
+    }
+    SDA(b, ack ? 0 : 1);
+    delay_us(T_US);
+    SCL(b, 1); delay_us(T_US);
+    SCL(b, 0); delay_us(T_US);
+    SDA(b, 1);
+    return v;
+}
+
+static int i2c_send(const i2c_bus_t *b, uint8_t addr, const uint8_t *d, uint8_t n)
 {
     i2c_start(b);
-    int ack = i2c_write(b, (uint8_t)(addr << 1));
+    if (!i2c_write(b, (uint8_t)(addr << 1))) { i2c_stop(b); return -1; }
+    for (uint8_t i = 0; i < n; i++) {
+        if (!i2c_write(b, d[i])) { i2c_stop(b); return -1; }
+    }
     i2c_stop(b);
-    return ack;
+    return 0;
 }
 
-static void scan_bus(const i2c_bus_t *b)
+static int i2c_recv(const i2c_bus_t *b, uint8_t addr, uint8_t *buf, uint8_t n)
 {
-    i2c_init(b);
-    log_printf("I2C bus %s\r\n", b->name);
-    if (!SDA_READ(b)) {
-        log_printf("  SDA stuck low: wrong pin or no pull-up\r\n");
+    i2c_start(b);
+    if (!i2c_write(b, (uint8_t)((addr << 1) | 1))) { i2c_stop(b); return -1; }
+    for (uint8_t i = 0; i < n; i++) {
+        buf[i] = i2c_read_byte(b, i < (uint8_t)(n - 1));
     }
-    int found = 0;
-    for (uint8_t a = 0x08; a < 0x78; a++) {
-        if (i2c_probe(b, a)) {
-            log_printf("  device at 0x%02X\r\n", a);
-            found++;
-        }
-    }
-    if (!found) log_printf("  no devices found\r\n");
+    i2c_stop(b);
+    return 0;
 }
 
-static void i2c_task(void *arg)
+static int i2c_mem_write(const i2c_bus_t *b, uint8_t addr, uint8_t reg, uint8_t val)
+{
+    uint8_t d[2] = { reg, val };
+    return i2c_send(b, addr, d, 2);
+}
+
+static int i2c_mem_read(const i2c_bus_t *b, uint8_t addr, uint8_t reg, uint8_t *buf, uint8_t n)
+{
+    i2c_start(b);
+    if (!i2c_write(b, (uint8_t)(addr << 1))) { i2c_stop(b); return -1; }
+    if (!i2c_write(b, reg)) { i2c_stop(b); return -1; }
+    i2c_start(b);
+    if (!i2c_write(b, (uint8_t)((addr << 1) | 1))) { i2c_stop(b); return -1; }
+    for (uint8_t i = 0; i < n; i++) {
+        buf[i] = i2c_read_byte(b, i < (uint8_t)(n - 1));
+    }
+    i2c_stop(b);
+    return 0;
+}
+
+/* ---------- ICM20608 IMU (bus A, 0x68) ---------- */
+#define ICM_ADDR 0x68
+
+static int imu_init(void)
+{
+    uint8_t id = 0;
+    if (i2c_mem_read(&bus_a, ICM_ADDR, 0x75, &id, 1) != 0) return -1;
+    log_printf("ICM20608 WHO_AM_I=0x%02X\r\n", id);
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x6B, 0x80);      /* reset */
+    vTaskDelay(pdMS_TO_TICKS(100));
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x6B, 0x01);      /* auto clock */
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x6C, 0x00);      /* all axes on */
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x1B, 0x08);      /* gyro +-500 dps */
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x1C, 0x08);      /* accel +-4 g */
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x1D, 0x03);      /* accel low-pass */
+    i2c_mem_write(&bus_a, ICM_ADDR, 0x1A, 0x03);      /* gyro low-pass */
+    return (id == 0xAF || id == 0xAE) ? 0 : -2;
+}
+
+static int imu_read(int16_t a[3], int16_t g[3], int16_t *t)
+{
+    uint8_t r[14];
+    if (i2c_mem_read(&bus_a, ICM_ADDR, 0x3B, r, 14) != 0) return -1;
+    a[0] = (int16_t)((r[0] << 8) | r[1]);
+    a[1] = (int16_t)((r[2] << 8) | r[3]);
+    a[2] = (int16_t)((r[4] << 8) | r[5]);
+    *t   = (int16_t)((r[6] << 8) | r[7]);
+    g[0] = (int16_t)((r[8] << 8) | r[9]);
+    g[1] = (int16_t)((r[10] << 8) | r[11]);
+    g[2] = (int16_t)((r[12] << 8) | r[13]);
+    return 0;
+}
+
+/* ---------- AHT10/AHT20/AHT21 temperature/humidity (bus B, 0x38) ---------- */
+#define AHT_ADDR 0x38
+
+static int aht_init(void)
+{
+    uint8_t soft = 0xBA;
+    i2c_send(&bus_b, AHT_ADDR, &soft, 1);
+    vTaskDelay(pdMS_TO_TICKS(40));
+    uint8_t cal[3] = { 0xBE, 0x08, 0x00 };
+    i2c_send(&bus_b, AHT_ADDR, cal, 3);        /* AHT20/21 init, result ignored */
+    vTaskDelay(pdMS_TO_TICKS(20));
+    return i2c_send(&bus_b, AHT_ADDR, cal, 0); /* succeeds if the chip ACKs its address */
+}
+
+static int aht_trigger(void)
+{
+    uint8_t c[3] = { 0xAC, 0x33, 0x00 };
+    return i2c_send(&bus_b, AHT_ADDR, c, 3);
+}
+
+static int aht_read(int32_t *t_x100, int32_t *h_x100)
+{
+    uint8_t d[6];
+    if (i2c_recv(&bus_b, AHT_ADDR, d, 6) != 0) return -1;
+    if (d[0] & 0x80) return -2;                       /* still busy */
+    uint32_t hraw = ((uint32_t)d[1] << 12) | ((uint32_t)d[2] << 4) | (d[3] >> 4);
+    uint32_t traw = ((uint32_t)(d[3] & 0x0F) << 16) | ((uint32_t)d[4] << 8) | d[5];
+    *h_x100 = (int32_t)(((uint64_t)hraw * 10000) >> 20);
+    *t_x100 = (int32_t)(((uint64_t)traw * 20000) >> 20) - 5000;
+    return 0;
+}
+
+/* ---------- AP3216C light/proximity (bus A, 0x1E) ---------- */
+#define ALS_ADDR 0x1E
+
+static int als_init(void)
+{
+    if (i2c_mem_write(&bus_a, ALS_ADDR, 0x00, 0x04) != 0) return -1;   /* reset */
+    vTaskDelay(pdMS_TO_TICKS(50));
+    return i2c_mem_write(&bus_a, ALS_ADDR, 0x00, 0x03);                /* ALS+PS+IR on */
+}
+
+static int als_read(uint16_t *als, uint16_t *ps, uint16_t *ir)
+{
+    uint8_t r[6];
+    if (i2c_mem_read(&bus_a, ALS_ADDR, 0x0A, r, 6) != 0) return -1;
+    *ir  = (uint16_t)(((uint16_t)r[1] << 2) | (r[0] & 0x03));
+    *als = (uint16_t)(((uint16_t)r[3] << 8) | r[2]);
+    *ps  = (uint16_t)(((uint16_t)(r[5] & 0x3F) << 4) | (r[4] & 0x0F));
+    return 0;
+}
+
+/* ---------- Sensor task: IMU + light every 100 ms, AHT every 1 s ---------- */
+static void sensor_task(void *arg)
 {
     (void)arg;
-    vTaskDelay(pdMS_TO_TICKS(1500));
-    scan_bus(&bus_a);
-    scan_bus(&bus_b);
-    log_printf("Expected: AP3216C=0x1E, ICM20608=0x68/0x69, AHT10=0x38\r\n");
-    vTaskDelete(NULL);
+    i2c_init(&bus_a);
+    i2c_init(&bus_b);
+
+    int imu_ok = (imu_init() == 0);
+    int aht_ok = (aht_init() == 0);
+    int als_ok = (als_init() == 0);
+    log_printf("init: IMU=%s AHT10=%s AP3216C=%s\r\n",
+               imu_ok ? "OK" : "FAIL", aht_ok ? "OK" : "FAIL", als_ok ? "OK" : "FAIL");
+
+    int16_t acc[3] = {0}, gyr[3] = {0}, traw = 0;
+    int32_t t100 = 0, h100 = 0;
+    uint16_t als = 0, ps = 0, ir = 0;
+    int imu_good = 0, aht_good = 0, als_good = 0;
+    int aht_rc = -9;
+    uint32_t cycle = 0;
+    TickType_t last = xTaskGetTickCount();
+
+    for (;;) {
+        if (imu_ok) imu_good = (imu_read(acc, gyr, &traw) == 0);
+        if (als_ok) als_good = (als_read(&als, &ps, &ir) == 0);
+        if (aht_ok) {
+            if (cycle % 10 == 0) {
+                aht_trigger();
+            } else if (cycle % 10 == 1) {
+                aht_rc = aht_read(&t100, &h100);
+                aht_good = (aht_rc == 0);
+            }
+        }
+
+        if (cycle % 10 == 2) {
+            unsigned long now = (unsigned long)xTaskGetTickCount();
+            if (imu_good) {
+                int ax = (int)((int32_t)acc[0] * 1000 / 8192);
+                int ay = (int)((int32_t)acc[1] * 1000 / 8192);
+                int az = (int)((int32_t)acc[2] * 1000 / 8192);
+                int32_t gx = (int32_t)gyr[0] * 100 / 655;
+                int32_t gy = (int32_t)gyr[1] * 100 / 655;
+                int32_t gz = (int32_t)gyr[2] * 100 / 655;
+                int32_t tt = (int32_t)traw * 100 / 3268 + 250;
+                log_printf("[%lu ms] ACC mg: %d %d %d | GYRO dps: %s%d.%d %s%d.%d %s%d.%d | T=%s%d.%dC\r\n",
+                           now, ax, ay, az, F1(gx), F1(gy), F1(gz), F1(tt));
+            } else {
+                log_printf("[%lu ms] IMU read ERROR\r\n", now);
+            }
+
+            if (aht_good) {
+                int32_t t10 = t100 / 10, h10 = h100 / 10;
+                log_printf("[%lu ms] AHT10: %s%d.%dC %d.%d%%RH\r\n",
+                           now, F1(t10), (int)(h10 / 10), (int)(h10 % 10));
+            } else {
+                log_printf("[%lu ms] AHT10 read ERROR rc=%d init_ok=%d\r\n", now, aht_rc, aht_ok);
+            }
+
+            if (als_good) {
+                log_printf("[%lu ms] AP3216C: ALS=%u (~%u lux) PS=%u IR=%u\r\n",
+                           now, als, (unsigned)((uint32_t)als * 36 / 100), ps, ir);
+            } else {
+                log_printf("[%lu ms] AP3216C read ERROR\r\n", now);
+            }
+        }
+
+        cycle++;
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
+    }
 }
 
 /* ---------- LEDs ---------- */
@@ -238,11 +423,12 @@ static void monitor_task(void *arg)
     TickType_t last = xTaskGetTickCount();
     for (;;) {
         vTaskDelayUntil(&last, pdMS_TO_TICKS(10000));
-        log_printf("[%lu ms] heap free=%u B | stack HWM (words): led=%u btn=%u mon=%u\r\n",
+        log_printf("[%lu ms] heap free=%u B | HWM: led=%u btn=%u sens=%u mon=%u\r\n",
                    (unsigned long)xTaskGetTickCount(),
                    (unsigned)xPortGetFreeHeapSize(),
                    (unsigned)uxTaskGetStackHighWaterMark(h_led),
                    (unsigned)uxTaskGetStackHighWaterMark(h_btn),
+                   (unsigned)uxTaskGetStackHighWaterMark(h_sens),
                    (unsigned)uxTaskGetStackHighWaterMark(h_mon));
     }
 }
@@ -254,11 +440,11 @@ int main(void)
     uart_init();
     uart_mutex = xSemaphoreCreateMutex();
 
-    log_printf("\r\nRT-Spark bottle: hardware test starting\r\n");
+    log_printf("\r\nRT-Spark bottle: sensor bring-up starting\r\n");
 
     xTaskCreate(led_task,     "led",     192, NULL, 1, &h_led);
-    xTaskCreate(button_task,  "buttons", 384, NULL, 3, &h_btn);
-    xTaskCreate(i2c_task,     "i2cscan", 384, NULL, 2, NULL);
+    xTaskCreate(button_task,  "buttons", 384, NULL, 2, &h_btn);
+    xTaskCreate(sensor_task,  "sensors", 512, NULL, 3, &h_sens);
     xTaskCreate(monitor_task, "monitor", 384, NULL, 1, &h_mon);
 
     vTaskStartScheduler();
