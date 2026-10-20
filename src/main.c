@@ -9,7 +9,9 @@
 
 static UART_HandleTypeDef huart1;
 static SemaphoreHandle_t uart_mutex;
-static TaskHandle_t h_led, h_btn, h_sens, h_mon;
+static TaskHandle_t h_led, h_btn, h_sens, h_mon, h_buz;
+static RTC_HandleTypeDef hrtc;
+static int rtc_src_lse = 0;
 
 extern void xPortSysTickHandler(void);
 
@@ -359,6 +361,93 @@ static void sensor_task(void *arg)
     }
 }
 
+/* ---------- Buzzer (PB0): beeps when UP is pressed ---------- */
+static void buzzer_task(void *arg)
+{
+    (void)arg;
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    GPIO_InitTypeDef g = {0};
+    g.Pin = GPIO_PIN_0;
+    g.Mode = GPIO_MODE_OUTPUT_PP;
+    g.Pull = GPIO_NOPULL;
+    g.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &g);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+
+    for (;;) {
+        ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        log_printf("[%lu ms] buzzer: beep\r\n", (unsigned long)xTaskGetTickCount());
+        TickType_t t = xTaskGetTickCount();
+        for (int i = 0; i < 300; i++) {            /* ~500 Hz for 300 ms */
+            HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
+            vTaskDelayUntil(&t, 1);
+        }
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+    }
+}
+
+/* ---------- RTC (32.768 kHz crystal, falls back to internal LSI) ---------- */
+#define RTC_MAGIC 0x32F2
+
+static int month_from_name(const char *m)
+{
+    static const char *names = "JanFebMarAprMayJunJulAugSepOctNovDec";
+    for (int i = 0; i < 12; i++) {
+        if (m[0] == names[i * 3] && m[1] == names[i * 3 + 1] && m[2] == names[i * 3 + 2]) return i + 1;
+    }
+    return 1;
+}
+
+static void rtc_init(void)
+{
+    __HAL_RCC_PWR_CLK_ENABLE();
+    HAL_PWR_EnableBkUpAccess();
+
+    RCC_OscInitTypeDef osc = {0};
+    osc.OscillatorType = RCC_OSCILLATORTYPE_LSE;
+    osc.LSEState = RCC_LSE_ON;
+    osc.PLL.PLLState = RCC_PLL_NONE;
+    uint32_t src = RCC_RTCCLKSOURCE_LSE;
+    rtc_src_lse = 1;
+    if (HAL_RCC_OscConfig(&osc) != HAL_OK) {
+        osc.OscillatorType = RCC_OSCILLATORTYPE_LSI;
+        osc.LSEState = RCC_LSE_OFF;
+        osc.LSIState = RCC_LSI_ON;
+        HAL_RCC_OscConfig(&osc);
+        src = RCC_RTCCLKSOURCE_LSI;
+        rtc_src_lse = 0;
+    }
+    RCC_PeriphCLKInitTypeDef pc = {0};
+    pc.PeriphClockSelection = RCC_PERIPHCLK_RTC;
+    pc.RTCClockSelection = src;
+    HAL_RCCEx_PeriphCLKConfig(&pc);
+    __HAL_RCC_RTC_ENABLE();
+
+    hrtc.Instance = RTC;
+    hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+    hrtc.Init.AsynchPrediv = 127;
+    hrtc.Init.SynchPrediv = rtc_src_lse ? 255 : 249;
+    hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+    HAL_RTC_Init(&hrtc);
+
+    if (HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0) != RTC_MAGIC) {
+        RTC_TimeTypeDef tm = {0};
+        RTC_DateTypeDef dt = {0};
+        const char *d = __DATE__;   /* "Oct 20 2026" */
+        const char *t = __TIME__;   /* "17:20:05"    */
+        tm.Hours   = (uint8_t)((t[0] - '0') * 10 + (t[1] - '0'));
+        tm.Minutes = (uint8_t)((t[3] - '0') * 10 + (t[4] - '0'));
+        tm.Seconds = (uint8_t)((t[6] - '0') * 10 + (t[7] - '0'));
+        dt.Month   = (uint8_t)month_from_name(d);
+        dt.Date    = (uint8_t)(((d[4] == ' ') ? 0 : (d[4] - '0')) * 10 + (d[5] - '0'));
+        dt.Year    = (uint8_t)((d[9] - '0') * 10 + (d[10] - '0'));
+        dt.WeekDay = RTC_WEEKDAY_MONDAY;
+        HAL_RTC_SetTime(&hrtc, &tm, RTC_FORMAT_BIN);
+        HAL_RTC_SetDate(&hrtc, &dt, RTC_FORMAT_BIN);
+        HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, RTC_MAGIC);
+    }
+}
+
 /* ---------- LEDs ---------- */
 static void led_task(void *arg)
 {
@@ -407,6 +496,7 @@ static void button_task(void *arg)
             int now = HAL_GPIO_ReadPin(btns[i].port, btns[i].pin) == GPIO_PIN_SET;
             if (now != prev[i]) {
                 prev[i] = now;
+                if (i == 3 && !now) xTaskNotifyGive(h_buz);   /* UP pressed -> beep */
                 log_printf("[%lu ms] button %s %s\r\n",
                            (unsigned long)xTaskGetTickCount(), btns[i].name,
                            now ? "released" : "pressed");
@@ -423,13 +513,22 @@ static void monitor_task(void *arg)
     TickType_t last = xTaskGetTickCount();
     for (;;) {
         vTaskDelayUntil(&last, pdMS_TO_TICKS(10000));
-        log_printf("[%lu ms] heap free=%u B | HWM: led=%u btn=%u sens=%u mon=%u\r\n",
+        RTC_TimeTypeDef tm;
+        RTC_DateTypeDef dt;
+        HAL_RTC_GetTime(&hrtc, &tm, RTC_FORMAT_BIN);
+        HAL_RTC_GetDate(&hrtc, &dt, RTC_FORMAT_BIN);
+        log_printf("RTC 20%02u-%02u-%02u %02u:%02u:%02u (%s)\r\n",
+                   (unsigned)dt.Year, (unsigned)dt.Month, (unsigned)dt.Date,
+                   (unsigned)tm.Hours, (unsigned)tm.Minutes, (unsigned)tm.Seconds,
+                   rtc_src_lse ? "LSE" : "LSI");
+        log_printf("[%lu ms] heap free=%u B | HWM: led=%u btn=%u sens=%u mon=%u buz=%u\r\n",
                    (unsigned long)xTaskGetTickCount(),
                    (unsigned)xPortGetFreeHeapSize(),
                    (unsigned)uxTaskGetStackHighWaterMark(h_led),
                    (unsigned)uxTaskGetStackHighWaterMark(h_btn),
                    (unsigned)uxTaskGetStackHighWaterMark(h_sens),
-                   (unsigned)uxTaskGetStackHighWaterMark(h_mon));
+                   (unsigned)uxTaskGetStackHighWaterMark(h_mon),
+                   (unsigned)uxTaskGetStackHighWaterMark(h_buz));
     }
 }
 
@@ -438,11 +537,13 @@ int main(void)
     HAL_Init();
     dwt_init();
     uart_init();
+    rtc_init();
     uart_mutex = xSemaphoreCreateMutex();
 
     log_printf("\r\nRT-Spark bottle: sensor bring-up starting\r\n");
 
     xTaskCreate(led_task,     "led",     192, NULL, 1, &h_led);
+    xTaskCreate(buzzer_task,  "buzzer",  384, NULL, 2, &h_buz);
     xTaskCreate(button_task,  "buttons", 384, NULL, 2, &h_btn);
     xTaskCreate(sensor_task,  "sensors", 512, NULL, 3, &h_sens);
     xTaskCreate(monitor_task, "monitor", 384, NULL, 1, &h_mon);
