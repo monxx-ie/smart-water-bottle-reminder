@@ -9,9 +9,19 @@
 
 static UART_HandleTypeDef huart1;
 static SemaphoreHandle_t uart_mutex;
-static TaskHandle_t h_led, h_btn, h_sens, h_mon, h_buz;
+static TaskHandle_t h_led, h_btn, h_sens, h_mon, h_buz, h_lcd;
 static RTC_HandleTypeDef hrtc;
 static int rtc_src_lse = 0;
+
+/* latest sensor values, shared between the sensor task and the LCD task */
+typedef struct {
+    int imu_ok, aht_ok, als_ok;
+    int ax, ay, az;          /* mg */
+    int32_t t10, h10;        /* tenths of degC / tenths of %RH */
+    unsigned lux, ps;
+} snap_t;
+static snap_t snap;
+static SemaphoreHandle_t snap_mutex;
 
 extern void xPortSysTickHandler(void);
 
@@ -326,10 +336,14 @@ static void sensor_task(void *arg)
 
         if (cycle % 10 == 2) {
             unsigned long now = (unsigned long)xTaskGetTickCount();
+            int ax = 0, ay = 0, az = 0;
+            int32_t t10 = t100 / 10, h10 = h100 / 10;
+            unsigned lux = (unsigned)((uint32_t)als * 36 / 100);
+
             if (imu_good) {
-                int ax = (int)((int32_t)acc[0] * 1000 / 8192);
-                int ay = (int)((int32_t)acc[1] * 1000 / 8192);
-                int az = (int)((int32_t)acc[2] * 1000 / 8192);
+                ax = (int)((int32_t)acc[0] * 1000 / 8192);
+                ay = (int)((int32_t)acc[1] * 1000 / 8192);
+                az = (int)((int32_t)acc[2] * 1000 / 8192);
                 int32_t gx = (int32_t)gyr[0] * 100 / 655;
                 int32_t gy = (int32_t)gyr[1] * 100 / 655;
                 int32_t gz = (int32_t)gyr[2] * 100 / 655;
@@ -341,7 +355,6 @@ static void sensor_task(void *arg)
             }
 
             if (aht_good) {
-                int32_t t10 = t100 / 10, h10 = h100 / 10;
                 log_printf("[%lu ms] AHT10: %s%d.%dC %d.%d%%RH\r\n",
                            now, F1(t10), (int)(h10 / 10), (int)(h10 % 10));
             } else {
@@ -350,14 +363,233 @@ static void sensor_task(void *arg)
 
             if (als_good) {
                 log_printf("[%lu ms] AP3216C: ALS=%u (~%u lux) PS=%u IR=%u\r\n",
-                           now, als, (unsigned)((uint32_t)als * 36 / 100), ps, ir);
+                           now, als, lux, ps, ir);
             } else {
                 log_printf("[%lu ms] AP3216C read ERROR\r\n", now);
             }
+
+            xSemaphoreTake(snap_mutex, portMAX_DELAY);
+            snap.imu_ok = imu_good;
+            snap.aht_ok = aht_good;
+            snap.als_ok = als_good;
+            snap.ax = ax; snap.ay = ay; snap.az = az;
+            snap.t10 = t10; snap.h10 = h10;
+            snap.lux = lux; snap.ps = ps;
+            xSemaphoreGive(snap_mutex);
         }
 
         cycle++;
         vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
+    }
+}
+
+/* ---------- LCD: ST7789 240x240 over 8-bit FSMC (bank 3) ---------- */
+#define LCD_CMD_ADDR   0x68000000UL
+#define LCD_DATA_ADDR  0x68040000UL     /* A18 high = data */
+#define LCD_W 240
+#define LCD_H 240
+#define COL_BG    0x0000
+#define COL_TXT   0xFFFF
+#define COL_TITLE 0x07FF
+#define COL_DIM   0x8410
+#define COL_ERR   0xF800
+#define COL_GOOD  0x07E0
+
+static uint8_t lcd_id[3];
+
+static inline void lcd_cmd(uint8_t c)  { *(volatile uint8_t *)LCD_CMD_ADDR = c; }
+static inline void lcd_data(uint8_t d) { *(volatile uint8_t *)LCD_DATA_ADDR = d; }
+static inline uint8_t lcd_read(void)   { return *(volatile uint8_t *)LCD_DATA_ADDR; }
+
+static void lcd_hw_init(void)
+{
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+    __HAL_RCC_GPIOG_CLK_ENABLE();
+    __HAL_RCC_FSMC_CLK_ENABLE();
+
+    GPIO_InitTypeDef g = {0};
+    g.Mode = GPIO_MODE_AF_PP;
+    g.Pull = GPIO_NOPULL;
+    g.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    g.Alternate = GPIO_AF12_FSMC;
+    g.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_4 | GPIO_PIN_5 |
+            GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;       /* D2 D3 NOE NWE A18 D0 D1 */
+    HAL_GPIO_Init(GPIOD, &g);
+    g.Pin = GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10;   /* D4..D7 */
+    HAL_GPIO_Init(GPIOE, &g);
+    g.Pin = GPIO_PIN_10;                                          /* NE3 */
+    HAL_GPIO_Init(GPIOG, &g);
+
+    g.Mode = GPIO_MODE_OUTPUT_PP;
+    g.Alternate = 0;
+    g.Speed = GPIO_SPEED_FREQ_LOW;
+    g.Pin = GPIO_PIN_3;                                           /* LCD reset */
+    HAL_GPIO_Init(GPIOD, &g);
+    g.Pin = GPIO_PIN_9;                                           /* backlight */
+    HAL_GPIO_Init(GPIOF, &g);
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_3, GPIO_PIN_SET);
+
+    /* bank 3, 8-bit SRAM mode, separate read/write timing, mode A */
+    FSMC_Bank1->BTCR[5]  = 0x0FUL | (60UL << 8);      /* read timing  */
+    FSMC_Bank1E->BWTR[4] = 0x09UL | (8UL << 8);       /* write timing */
+    FSMC_Bank1->BTCR[4]  = (1UL << 0) | (1UL << 12) | (1UL << 14);   /* MBKEN, WREN, EXTMOD */
+}
+
+typedef struct { uint8_t cmd; uint8_t n; uint8_t d[14]; } lcd_step_t;
+
+static const lcd_step_t lcd_steps[] = {
+    { 0x36, 1,  { 0x00 } },
+    { 0x3A, 1,  { 0x65 } },
+    { 0xB2, 5,  { 0x0C, 0x0C, 0x00, 0x33, 0x33 } },
+    { 0xB7, 1,  { 0x35 } },
+    { 0xBB, 1,  { 0x37 } },
+    { 0xC0, 1,  { 0x2C } },
+    { 0xC2, 1,  { 0x01 } },
+    { 0xC3, 1,  { 0x12 } },
+    { 0xC4, 1,  { 0x20 } },
+    { 0xC6, 1,  { 0x0F } },
+    { 0xD0, 2,  { 0xA4, 0xA1 } },
+    { 0xE0, 14, { 0xD0, 0x04, 0x0D, 0x11, 0x13, 0x2B, 0x3F, 0x54, 0x4C, 0x18, 0x0D, 0x0B, 0x1F, 0x23 } },
+    { 0xE1, 14, { 0xD0, 0x04, 0x0C, 0x11, 0x13, 0x2C, 0x3F, 0x44, 0x51, 0x2F, 0x1F, 0x1F, 0x20, 0x23 } },
+    { 0x21, 0,  { 0 } },
+    { 0x35, 1,  { 0x00 } },
+};
+
+static void lcd_init(void)
+{
+    lcd_hw_init();
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_3, GPIO_PIN_RESET);
+    vTaskDelay(pdMS_TO_TICKS(100));
+    HAL_GPIO_WritePin(GPIOD, GPIO_PIN_3, GPIO_PIN_SET);
+    vTaskDelay(pdMS_TO_TICKS(100));
+
+    lcd_cmd(0x04);                       /* read display ID */
+    (void)lcd_read();                    /* dummy */
+    lcd_id[0] = lcd_read();
+    lcd_id[1] = lcd_read();
+    lcd_id[2] = lcd_read();
+    log_printf("LCD ID: %02X %02X %02X\r\n", lcd_id[0], lcd_id[1], lcd_id[2]);
+
+    for (unsigned i = 0; i < sizeof lcd_steps / sizeof lcd_steps[0]; i++) {
+        lcd_cmd(lcd_steps[i].cmd);
+        for (uint8_t j = 0; j < lcd_steps[i].n; j++) lcd_data(lcd_steps[i].d[j]);
+    }
+    lcd_cmd(0x11);                       /* sleep out */
+    vTaskDelay(pdMS_TO_TICKS(120));
+    lcd_cmd(0x29);                       /* display on */
+}
+
+static void lcd_window(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1)
+{
+    lcd_cmd(0x2A);
+    lcd_data((uint8_t)(x0 >> 8)); lcd_data((uint8_t)(x0 & 0xFF));
+    lcd_data((uint8_t)(x1 >> 8)); lcd_data((uint8_t)(x1 & 0xFF));
+    lcd_cmd(0x2B);
+    lcd_data((uint8_t)(y0 >> 8)); lcd_data((uint8_t)(y0 & 0xFF));
+    lcd_data((uint8_t)(y1 >> 8)); lcd_data((uint8_t)(y1 & 0xFF));
+    lcd_cmd(0x2C);
+}
+
+static void lcd_pixel(uint16_t c)
+{
+    lcd_data((uint8_t)(c >> 8));
+    lcd_data((uint8_t)(c & 0xFF));
+}
+
+static void lcd_fill(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+{
+    lcd_window(x, y, (uint16_t)(x + w - 1), (uint16_t)(y + h - 1));
+    for (uint32_t i = 0; i < (uint32_t)w * h; i++) lcd_pixel(color);
+}
+
+/* 5x7 font, ASCII 0x20..0x5A (upper-case only), one byte per column, bit0 = top */
+static const uint8_t font5x7[] = {
+    0x00,0x00,0x00,0x00,0x00, 0x00,0x00,0x5F,0x00,0x00, 0x00,0x07,0x00,0x07,0x00, 0x14,0x7F,0x14,0x7F,0x14,
+    0x24,0x2A,0x7F,0x2A,0x12, 0x23,0x13,0x08,0x64,0x62, 0x36,0x49,0x56,0x20,0x50, 0x00,0x08,0x07,0x03,0x00,
+    0x00,0x1C,0x22,0x41,0x00, 0x00,0x41,0x22,0x1C,0x00, 0x2A,0x1C,0x7F,0x1C,0x2A, 0x08,0x08,0x3E,0x08,0x08,
+    0x00,0x80,0x70,0x30,0x00, 0x08,0x08,0x08,0x08,0x08, 0x00,0x00,0x60,0x60,0x00, 0x20,0x10,0x08,0x04,0x02,
+    0x3E,0x51,0x49,0x45,0x3E, 0x00,0x42,0x7F,0x40,0x00, 0x72,0x49,0x49,0x49,0x46, 0x21,0x41,0x49,0x4D,0x33,
+    0x18,0x14,0x12,0x7F,0x10, 0x27,0x45,0x45,0x45,0x39, 0x3C,0x4A,0x49,0x49,0x31, 0x41,0x21,0x11,0x09,0x07,
+    0x36,0x49,0x49,0x49,0x36, 0x46,0x49,0x49,0x29,0x1E, 0x00,0x00,0x14,0x00,0x00, 0x00,0x40,0x34,0x00,0x00,
+    0x00,0x08,0x14,0x22,0x41, 0x14,0x14,0x14,0x14,0x14, 0x00,0x41,0x22,0x14,0x08, 0x02,0x01,0x59,0x09,0x06,
+    0x3E,0x41,0x5D,0x59,0x4E, 0x7C,0x12,0x11,0x12,0x7C, 0x7F,0x49,0x49,0x49,0x36, 0x3E,0x41,0x41,0x41,0x22,
+    0x7F,0x41,0x41,0x41,0x3E, 0x7F,0x49,0x49,0x49,0x41, 0x7F,0x09,0x09,0x09,0x01, 0x3E,0x41,0x41,0x51,0x73,
+    0x7F,0x08,0x08,0x08,0x7F, 0x00,0x41,0x7F,0x41,0x00, 0x20,0x40,0x41,0x3F,0x01, 0x7F,0x08,0x14,0x22,0x41,
+    0x7F,0x40,0x40,0x40,0x40, 0x7F,0x02,0x1C,0x02,0x7F, 0x7F,0x04,0x08,0x10,0x7F, 0x3E,0x41,0x41,0x41,0x3E,
+    0x7F,0x09,0x09,0x09,0x06, 0x3E,0x41,0x51,0x21,0x5E, 0x7F,0x09,0x19,0x29,0x46, 0x26,0x49,0x49,0x49,0x32,
+    0x03,0x01,0x7F,0x01,0x03, 0x3F,0x40,0x40,0x40,0x3F, 0x1F,0x20,0x40,0x20,0x1F, 0x3F,0x40,0x38,0x40,0x3F,
+    0x63,0x14,0x08,0x14,0x63, 0x03,0x04,0x78,0x04,0x03, 0x61,0x59,0x49,0x4D,0x43,
+};
+
+static void lcd_char(uint16_t x, uint16_t y, char ch, int s, uint16_t fg, uint16_t bg)
+{
+    if (ch >= 'a' && ch <= 'z') ch = (char)(ch - 32);
+    if (ch < 0x20 || ch > 0x5A) ch = '?';
+    const uint8_t *glyph = &font5x7[(ch - 0x20) * 5];
+
+    lcd_window(x, y, (uint16_t)(x + 6 * s - 1), (uint16_t)(y + 8 * s - 1));
+    for (int row = 0; row < 8 * s; row++) {
+        int gy = row / s;
+        for (int col = 0; col < 6 * s; col++) {
+            int gx = col / s;
+            int on = (gx < 5 && gy < 7) ? ((glyph[gx] >> gy) & 1) : 0;
+            lcd_pixel(on ? fg : bg);
+        }
+    }
+}
+
+static void lcd_text(uint16_t x, uint16_t y, const char *str, int s, uint16_t fg, uint16_t bg)
+{
+    while (*str) {
+        lcd_char(x, y, *str++, s, fg, bg);
+        x = (uint16_t)(x + 6 * s);
+    }
+}
+
+static void lcd_line(uint16_t y, uint16_t color, const char *fmt, ...)
+{
+    char tmp[40], out[40];
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf(tmp, sizeof tmp, fmt, ap);
+    va_end(ap);
+    snprintf(out, sizeof out, "%-19.19s", tmp);
+    lcd_text(4, y, out, 2, color, COL_BG);
+}
+
+static void lcd_task(void *arg)
+{
+    (void)arg;
+    lcd_init();
+    lcd_fill(0, 0, LCD_W, LCD_H, COL_BG);
+    lcd_text(12, 8, "WATER BOTTLE", 3, COL_TITLE, COL_BG);
+    lcd_text(4, 40, "RT-SPARK EDGE AI", 2, COL_DIM, COL_BG);
+    HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);     /* backlight on */
+
+    TickType_t last = xTaskGetTickCount();
+    for (;;) {
+        snap_t s;
+        xSemaphoreTake(snap_mutex, portMAX_DELAY);
+        s = snap;
+        xSemaphoreGive(snap_mutex);
+
+        if (s.aht_ok) lcd_line(70, COL_TXT, "TEMP  %s%d.%d C", F1(s.t10));
+        else          lcd_line(70, COL_ERR, "TEMP  ERR");
+        if (s.aht_ok) lcd_line(94, COL_TXT, "HUMID %s%d.%d %%", F1(s.h10));
+        else          lcd_line(94, COL_ERR, "HUMID ERR");
+        if (s.als_ok) lcd_line(118, COL_TXT, "LIGHT %u LUX", s.lux);
+        else          lcd_line(118, COL_ERR, "LIGHT ERR");
+        if (s.als_ok) lcd_line(142, COL_TXT, "PROX  %u", s.ps);
+        else          lcd_line(142, COL_ERR, "PROX  ERR");
+        if (s.imu_ok) lcd_line(166, COL_TXT, "ACC %d %d %d", s.ax, s.ay, s.az);
+        else          lcd_line(166, COL_ERR, "ACC   ERR");
+        lcd_line(190, COL_GOOD, "UPTIME %lu S", (unsigned long)(xTaskGetTickCount() / 1000));
+        lcd_line(214, COL_DIM, "LCD ID %02X %02X %02X", lcd_id[0], lcd_id[1], lcd_id[2]);
+
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(500));
     }
 }
 
@@ -521,14 +753,15 @@ static void monitor_task(void *arg)
                    (unsigned)dt.Year, (unsigned)dt.Month, (unsigned)dt.Date,
                    (unsigned)tm.Hours, (unsigned)tm.Minutes, (unsigned)tm.Seconds,
                    rtc_src_lse ? "LSE" : "LSI");
-        log_printf("[%lu ms] heap free=%u B | HWM: led=%u btn=%u sens=%u mon=%u buz=%u\r\n",
+        log_printf("[%lu ms] heap=%u B HWM: led=%u btn=%u sens=%u mon=%u buz=%u lcd=%u\r\n",
                    (unsigned long)xTaskGetTickCount(),
                    (unsigned)xPortGetFreeHeapSize(),
                    (unsigned)uxTaskGetStackHighWaterMark(h_led),
                    (unsigned)uxTaskGetStackHighWaterMark(h_btn),
                    (unsigned)uxTaskGetStackHighWaterMark(h_sens),
                    (unsigned)uxTaskGetStackHighWaterMark(h_mon),
-                   (unsigned)uxTaskGetStackHighWaterMark(h_buz));
+                   (unsigned)uxTaskGetStackHighWaterMark(h_buz),
+                   (unsigned)uxTaskGetStackHighWaterMark(h_lcd));
     }
 }
 
@@ -539,13 +772,15 @@ int main(void)
     uart_init();
     rtc_init();
     uart_mutex = xSemaphoreCreateMutex();
+    snap_mutex = xSemaphoreCreateMutex();
 
-    log_printf("\r\nRT-Spark bottle: sensor bring-up starting\r\n");
+    log_printf("\r\nRT-Spark bottle: bring-up with LCD starting\r\n");
 
     xTaskCreate(led_task,     "led",     192, NULL, 1, &h_led);
     xTaskCreate(buzzer_task,  "buzzer",  384, NULL, 2, &h_buz);
     xTaskCreate(button_task,  "buttons", 384, NULL, 2, &h_btn);
     xTaskCreate(sensor_task,  "sensors", 512, NULL, 3, &h_sens);
+    xTaskCreate(lcd_task,     "lcd",     512, NULL, 1, &h_lcd);
     xTaskCreate(monitor_task, "monitor", 384, NULL, 1, &h_mon);
 
     vTaskStartScheduler();
