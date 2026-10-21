@@ -935,6 +935,8 @@ static void monitor_task(void *arg)
 int main(void)
 {
     HAL_Init();
+    extern void SystemClock_Config(void);
+    SystemClock_Config();
     dwt_init();
     uart_init();
     rtc_init();
