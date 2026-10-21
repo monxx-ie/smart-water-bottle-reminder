@@ -2,23 +2,41 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+#include "queue.h"
+#include "model.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 
+#define STREAM_CSV       0     /* 1 = stream raw CSV over serial (data collection mode) */
+#define WIN_N            100   /* 2 s window at 50 Hz */
+#define HOP_N            50    /* new prediction every 1 s */
+#define REMIND_AFTER_S   30    /* remind if no drinking for this long */
+#define REMIND_REPEAT_S  10    /* then beep again every this many seconds */
+
 static UART_HandleTypeDef huart1;
 static SemaphoreHandle_t uart_mutex;
-static TaskHandle_t h_led, h_btn, h_sens, h_mon, h_buz, h_lcd;
+static TaskHandle_t h_led, h_btn, h_sens, h_mon, h_buz, h_lcd, h_inf, h_rem;
 static RTC_HandleTypeDef hrtc;
 static int rtc_src_lse = 0;
 
-/* latest sensor values, shared between the sensor task and the LCD task */
+typedef struct { int16_t imu[6]; uint16_t ps, als; } sample_t;
+typedef struct { uint8_t cls; uint32_t infer_us; } result_t;
+
+static QueueHandle_t q_samples, q_results;
+static volatile uint32_t samples_dropped = 0, imu_err_cnt = 0;
+
+/* latest values, shared between tasks (protected by snap_mutex) */
 typedef struct {
     int imu_ok, aht_ok, als_ok;
     int ax, ay, az;          /* mg */
     int32_t t10, h10;        /* tenths of degC / tenths of %RH */
     unsigned lux, ps;
+    int have_cls, cls;
+    uint32_t infer_us;
+    uint32_t since_drink_s;
+    int overdue;
 } snap_t;
 static snap_t snap;
 static SemaphoreHandle_t snap_mutex;
@@ -301,9 +319,7 @@ static int als_read(uint16_t *als, uint16_t *ps, uint16_t *ir)
     return 0;
 }
 
-/* ---------- Sensor task: IMU + light at 50 Hz, streamed as CSV ----------
-   Line format: D,<ms>,ax,ay,az,gx,gy,gz,ps,als   (raw counts)
-   accel: 8192 LSB/g, gyro: 65.5 LSB/dps.  "E,<ms>" = IMU read failed twice. */
+/* ---------- Sensor task: IMU + light at 50 Hz -> queue ---------- */
 static void sensor_task(void *arg)
 {
     (void)arg;
@@ -337,13 +353,16 @@ static void sensor_task(void *arg)
             }
         }
 
-        unsigned long now = (unsigned long)xTaskGetTickCount();
         if (imu_good) {
-            log_printf("D,%lu,%d,%d,%d,%d,%d,%d,%u,%u\r\n", now,
+            sample_t smp = { { acc[0], acc[1], acc[2], gyr[0], gyr[1], gyr[2] }, ps, als };
+            if (xQueueSend(q_samples, &smp, 0) != pdTRUE) samples_dropped++;
+#if STREAM_CSV
+            log_printf("D,%lu,%d,%d,%d,%d,%d,%d,%u,%u\r\n", (unsigned long)xTaskGetTickCount(),
                        acc[0], acc[1], acc[2], gyr[0], gyr[1], gyr[2],
                        (unsigned)ps, (unsigned)als);
+#endif
         } else {
-            log_printf("E,%lu\r\n", now);
+            imu_err_cnt++;
         }
 
         if (cycle % 25 == 0) {
@@ -366,6 +385,148 @@ static void sensor_task(void *arg)
     }
 }
 
+/* ---------- Inference: features + decision tree ---------- */
+static sample_t win[WIN_N];
+static uint32_t infer_times_us[50];
+
+static float hw_sqrtf(float x)
+{
+    float r;
+    __asm volatile ("vsqrt.f32 %0, %1" : "=t"(r) : "t"(x));
+    return r;
+}
+
+/* feature order must match NAMES in ml/train.py */
+static void compute_features(float f[N_FEATURES])
+{
+    static const float scale[6] = { 8192.0f, 8192.0f, 8192.0f, 65.5f, 65.5f, 65.5f };
+
+    for (int c = 0; c < 6; c++) {
+        int32_t sum = 0;
+        int16_t mn = 32767, mx = -32768;
+        for (int i = 0; i < WIN_N; i++) {
+            int16_t x = win[i].imu[c];
+            sum += x;
+            if (x < mn) mn = x;
+            if (x > mx) mx = x;
+        }
+        float mean = (float)sum / WIN_N;
+        float acc2 = 0.0f;
+        for (int i = 0; i < WIN_N; i++) {
+            float d = (float)win[i].imu[c] - mean;
+            acc2 += d * d;
+        }
+        f[c * 4 + 0] = mean / scale[c];
+        f[c * 4 + 1] = hw_sqrtf(acc2 / WIN_N) / scale[c];
+        f[c * 4 + 2] = (float)mn / scale[c];
+        f[c * 4 + 3] = (float)mx / scale[c];
+    }
+
+    float msum = 0.0f;
+    for (int i = 0; i < WIN_N; i++) {
+        float x = win[i].imu[0], y = win[i].imu[1], z = win[i].imu[2];
+        msum += hw_sqrtf(x * x + y * y + z * z);
+    }
+    float mmean = msum / WIN_N;
+    float mvar = 0.0f;
+    for (int i = 0; i < WIN_N; i++) {
+        float x = win[i].imu[0], y = win[i].imu[1], z = win[i].imu[2];
+        float d = hw_sqrtf(x * x + y * y + z * z) - mmean;
+        mvar += d * d;
+    }
+    f[24] = mmean / 8192.0f;
+    f[25] = hw_sqrtf(mvar / WIN_N) / 8192.0f;
+
+    uint16_t psmax = 0;
+    uint32_t alssum = 0;
+    for (int i = 0; i < WIN_N; i++) {
+        if (win[i].ps > psmax) psmax = win[i].ps;
+        alssum += win[i].als;
+    }
+    f[26] = (float)psmax;
+    f[27] = (float)alssum / WIN_N;
+}
+
+static void report_timing(void)
+{
+    uint32_t t[50];
+    for (int i = 0; i < 50; i++) t[i] = infer_times_us[i];
+    for (int i = 1; i < 50; i++) {
+        uint32_t k = t[i];
+        int j = i - 1;
+        while (j >= 0 && t[j] > k) { t[j + 1] = t[j]; j--; }
+        t[j + 1] = k;
+    }
+    log_printf("INFER TIMING (50 runs): median=%lu us p95=%lu us max=%lu us\r\n",
+               (unsigned long)((t[24] + t[25]) / 2), (unsigned long)t[47], (unsigned long)t[49]);
+}
+
+static void infer_task(void *arg)
+{
+    (void)arg;
+    uint32_t filled = 0, idx = 0, since = 0, runs = 0;
+    sample_t s;
+
+    for (;;) {
+        xQueueReceive(q_samples, &s, portMAX_DELAY);
+        win[idx] = s;
+        idx = (idx + 1) % WIN_N;
+        if (filled < WIN_N) filled++;
+        if (++since < HOP_N || filled < WIN_N) continue;
+        since = 0;
+
+        float f[N_FEATURES];
+        uint32_t t0 = DWT->CYCCNT;
+        compute_features(f);
+        int cls = model_predict(f);
+        uint32_t us = (DWT->CYCCNT - t0) / (SystemCoreClock / 1000000U);
+
+        infer_times_us[runs % 50] = us;
+        runs++;
+
+        result_t r = { (uint8_t)cls, us };
+        xQueueSend(q_results, &r, 0);
+        log_printf("[%lu ms] state=%s infer=%lu us\r\n",
+                   (unsigned long)xTaskGetTickCount(), cls_names[cls], (unsigned long)us);
+        if (runs % 50 == 0) report_timing();
+    }
+}
+
+/* ---------- Reminder: tracks time since last drinking ---------- */
+static void reminder_task(void *arg)
+{
+    (void)arg;
+    result_t r;
+    TickType_t last_drink = xTaskGetTickCount();
+    TickType_t last_beep = 0;
+    int beeped = 0;
+
+    for (;;) {
+        if (xQueueReceive(q_results, &r, portMAX_DELAY) != pdTRUE) continue;
+        TickType_t now = xTaskGetTickCount();
+
+        if (r.cls == CLS_DRINKING) {
+            last_drink = now;
+            beeped = 0;
+        }
+        int overdue = (now - last_drink) >= pdMS_TO_TICKS(REMIND_AFTER_S * 1000U);
+        if (overdue && (!beeped || (now - last_beep) >= pdMS_TO_TICKS(REMIND_REPEAT_S * 1000U))) {
+            last_beep = now;
+            beeped = 1;
+            xTaskNotifyGive(h_buz);
+            log_printf("[%lu ms] REMINDER: drink water!\r\n", (unsigned long)now);
+        }
+
+        xSemaphoreTake(snap_mutex, portMAX_DELAY);
+        snap.have_cls = 1;
+        snap.cls = r.cls;
+        snap.infer_us = r.infer_us;
+        snap.since_drink_s = (uint32_t)((now - last_drink) / 1000U);
+        snap.overdue = overdue;
+        xSemaphoreGive(snap_mutex);
+    }
+}
+
 /* ---------- LCD: ST7789 240x240 over 8-bit FSMC (bank 3) ---------- */
 #define LCD_CMD_ADDR   0x68000000UL
 #define LCD_DATA_ADDR  0x68040000UL     /* A18 high = data */
@@ -377,6 +538,7 @@ static void sensor_task(void *arg)
 #define COL_DIM   0x8410
 #define COL_ERR   0xF800
 #define COL_GOOD  0x07E0
+#define COL_YEL   0xFFE0
 
 static uint8_t lcd_id[3];
 
@@ -543,6 +705,17 @@ static void lcd_line(uint16_t y, uint16_t color, const char *fmt, ...)
     lcd_text(4, y, out, 2, color, COL_BG);
 }
 
+static uint16_t state_color(int c)
+{
+    switch (c) {
+    case CLS_RESTING:  return COL_TITLE;
+    case CLS_CARRIED:  return COL_TXT;
+    case CLS_DRINKING: return COL_GOOD;
+    case CLS_SHAKEN:   return COL_YEL;
+    default:           return COL_DIM;
+    }
+}
+
 static void lcd_task(void *arg)
 {
     (void)arg;
@@ -559,24 +732,32 @@ static void lcd_task(void *arg)
         s = snap;
         xSemaphoreGive(snap_mutex);
 
-        if (s.aht_ok) lcd_line(70, COL_TXT, "TEMP  %s%d.%d C", F1(s.t10));
-        else          lcd_line(70, COL_ERR, "TEMP  ERR");
-        if (s.aht_ok) lcd_line(94, COL_TXT, "HUMID %s%d.%d %%", F1(s.h10));
-        else          lcd_line(94, COL_ERR, "HUMID ERR");
-        if (s.als_ok) lcd_line(118, COL_TXT, "LIGHT %u LUX", s.lux);
-        else          lcd_line(118, COL_ERR, "LIGHT ERR");
-        if (s.als_ok) lcd_line(142, COL_TXT, "PROX  %u", s.ps);
-        else          lcd_line(142, COL_ERR, "PROX  ERR");
-        if (s.imu_ok) lcd_line(166, COL_TXT, "ACC %d %d %d", s.ax, s.ay, s.az);
-        else          lcd_line(166, COL_ERR, "ACC   ERR");
-        lcd_line(190, COL_GOOD, "UPTIME %lu S", (unsigned long)(xTaskGetTickCount() / 1000));
-        lcd_line(214, COL_DIM, "LCD ID %02X %02X %02X", lcd_id[0], lcd_id[1], lcd_id[2]);
+        char b[24];
+        if (s.have_cls) {
+            snprintf(b, sizeof b, "%-12.12s", cls_names[s.cls]);
+            lcd_text(4, 64, b, 3, state_color(s.cls), COL_BG);
+        } else {
+            lcd_text(4, 64, "WAITING...  ", 3, COL_DIM, COL_BG);
+        }
+
+        if (s.overdue) lcd_line(94, COL_ERR, "DRINK WATER NOW!");
+        else           lcd_line(94, COL_GOOD, "LAST DRINK %lu S", (unsigned long)s.since_drink_s);
+
+        if (s.aht_ok) lcd_line(118, COL_TXT, "TEMP  %s%d.%d C", F1(s.t10));
+        else          lcd_line(118, COL_ERR, "TEMP  ERR");
+        if (s.aht_ok) lcd_line(142, COL_TXT, "HUMID %s%d.%d %%", F1(s.h10));
+        else          lcd_line(142, COL_ERR, "HUMID ERR");
+        if (s.als_ok) lcd_line(166, COL_TXT, "LIGHT %u PS %u", s.lux, s.ps);
+        else          lcd_line(166, COL_ERR, "LIGHT ERR");
+        if (s.imu_ok) lcd_line(190, COL_TXT, "ACC %d %d %d", s.ax, s.ay, s.az);
+        else          lcd_line(190, COL_ERR, "ACC   ERR");
+        lcd_line(214, COL_DIM, "INFER %lu US", (unsigned long)s.infer_us);
 
         vTaskDelayUntil(&last, pdMS_TO_TICKS(500));
     }
 }
 
-/* ---------- Buzzer (PB0): beeps when UP is pressed ---------- */
+/* ---------- Buzzer (PB0): beeps on reminder or when UP is pressed ---------- */
 static void buzzer_task(void *arg)
 {
     (void)arg;
@@ -591,7 +772,6 @@ static void buzzer_task(void *arg)
 
     for (;;) {
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-        log_printf("[%lu ms] buzzer: beep\r\n", (unsigned long)xTaskGetTickCount());
         TickType_t t = xTaskGetTickCount();
         for (int i = 0; i < 300; i++) {            /* ~500 Hz for 300 ms */
             HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_0);
@@ -648,7 +828,7 @@ static void rtc_init(void)
     if (HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0) != RTC_MAGIC) {
         RTC_TimeTypeDef tm = {0};
         RTC_DateTypeDef dt = {0};
-        const char *d = __DATE__;   /* "Oct 20 2026" */
+        const char *d = __DATE__;   /* "Oct 21 2026" */
         const char *t = __TIME__;   /* "17:20:05"    */
         tm.Hours   = (uint8_t)((t[0] - '0') * 10 + (t[1] - '0'));
         tm.Minutes = (uint8_t)((t[3] - '0') * 10 + (t[4] - '0'));
@@ -736,7 +916,7 @@ static void monitor_task(void *arg)
                    (unsigned)dt.Year, (unsigned)dt.Month, (unsigned)dt.Date,
                    (unsigned)tm.Hours, (unsigned)tm.Minutes, (unsigned)tm.Seconds,
                    rtc_src_lse ? "LSE" : "LSI");
-        log_printf("[%lu ms] heap=%u B HWM: led=%u btn=%u sens=%u mon=%u buz=%u lcd=%u\r\n",
+        log_printf("[%lu ms] heap=%u B HWM: led=%u btn=%u sens=%u mon=%u buz=%u lcd=%u inf=%u rem=%u\r\n",
                    (unsigned long)xTaskGetTickCount(),
                    (unsigned)xPortGetFreeHeapSize(),
                    (unsigned)uxTaskGetStackHighWaterMark(h_led),
@@ -744,7 +924,11 @@ static void monitor_task(void *arg)
                    (unsigned)uxTaskGetStackHighWaterMark(h_sens),
                    (unsigned)uxTaskGetStackHighWaterMark(h_mon),
                    (unsigned)uxTaskGetStackHighWaterMark(h_buz),
-                   (unsigned)uxTaskGetStackHighWaterMark(h_lcd));
+                   (unsigned)uxTaskGetStackHighWaterMark(h_lcd),
+                   (unsigned)uxTaskGetStackHighWaterMark(h_inf),
+                   (unsigned)uxTaskGetStackHighWaterMark(h_rem));
+        log_printf("queue drops=%lu imu_errors=%lu\r\n",
+                   (unsigned long)samples_dropped, (unsigned long)imu_err_cnt);
     }
 }
 
@@ -756,15 +940,19 @@ int main(void)
     rtc_init();
     uart_mutex = xSemaphoreCreateMutex();
     snap_mutex = xSemaphoreCreateMutex();
+    q_samples = xQueueCreate(32, sizeof(sample_t));
+    q_results = xQueueCreate(8, sizeof(result_t));
 
-    log_printf("\r\nRT-Spark bottle: data logger starting\r\n");
+    log_printf("\r\nRT-Spark bottle: on-device inference starting\r\n");
 
-    xTaskCreate(led_task,     "led",     192, NULL, 1, &h_led);
-    xTaskCreate(buzzer_task,  "buzzer",  384, NULL, 2, &h_buz);
-    xTaskCreate(button_task,  "buttons", 384, NULL, 2, &h_btn);
-    xTaskCreate(sensor_task,  "sensors", 512, NULL, 3, &h_sens);
-    xTaskCreate(lcd_task,     "lcd",     512, NULL, 1, &h_lcd);
-    xTaskCreate(monitor_task, "monitor", 384, NULL, 1, &h_mon);
+    xTaskCreate(led_task,      "led",      192, NULL, 1, &h_led);
+    xTaskCreate(buzzer_task,   "buzzer",   384, NULL, 2, &h_buz);
+    xTaskCreate(button_task,   "buttons",  384, NULL, 2, &h_btn);
+    xTaskCreate(reminder_task, "reminder", 384, NULL, 2, &h_rem);
+    xTaskCreate(sensor_task,   "sensors",  512, NULL, 3, &h_sens);
+    xTaskCreate(infer_task,    "infer",    512, NULL, 4, &h_inf);
+    xTaskCreate(lcd_task,      "lcd",      512, NULL, 1, &h_lcd);
+    xTaskCreate(monitor_task,  "monitor",  384, NULL, 1, &h_mon);
 
     vTaskStartScheduler();
     for (;;) {}
