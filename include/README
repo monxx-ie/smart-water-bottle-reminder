@@ -8,7 +8,7 @@ A water bottle that knows what you are doing with it. A small machine learning m
 
 | Item | Detail |
 |---|---|
-| Board | RT-Thread RT-Spark (Spark-1), STM32F407ZGT6 (Cortex-M4F, 168 MHz capable, running on the 16 MHz internal clock) |
+| Board | RT-Thread RT-Spark (Spark-1), STM32F407ZGT6 (Cortex-M4F, 168 MHz from the 8 MHz crystal through the PLL) |
 | Motion sensor | ICM20608 IMU (accelerometer ±4 g, gyroscope ±500 dps) sampled at 50 Hz |
 | Light / proximity | AP3216C |
 | Temperature / humidity | AHT20/21 family |
@@ -16,7 +16,11 @@ A water bottle that knows what you are doing with it. A small machine learning m
 | Output | Buzzer on PB0, LEDs on PF11 / PF12 |
 | Debug | USART1 (PA9 / PA10, 115200 8N1) through the ST-LINK virtual COM port |
 
-Not used by this product: the Wi-Fi module, external flash, SD card slot and audio codec.
+Pins used: IMU and AP3216C on software I2C bus A (SCL PF1, SDA PF0); AHT sensor on bus B (SCL PE0, SDA PE1); LCD reset PD3, backlight PF9, FSMC bank 3; buttons PC0, PC1, PC4, PC5.
+
+Not used by this product: the Wi-Fi module, external flash, SD card slot (no card was fitted) and audio codec.
+
+Board file: `boards/rtspark.json` (copied from the PlatformIO `black_f407zg` manifest for the same STM32F407ZGT6 and renamed for the RT-Spark). The pin mapping is defined in `src/main.c`, and the oscillator setup (8 MHz crystal, PLL to 168 MHz, APB1 /4, APB2 /2, flash latency 5) is in `src/clock.c`.
 
 ## How it works
 
@@ -50,7 +54,7 @@ Shared-data protection: two queues (samples, results), a mutex for the UART, a m
 ![Confusion matrix](ml/confusion_matrix.png)
 
 ### Live trials on the board (`tools/trial.py`, `data/trials.csv`)
-80 trials, 20 per state, 6 seconds each:
+80 trials, 20 per state, 6 seconds each. These ran on the earlier 16 MHz build; the model, features and window length are unchanged in the final 168 MHz build.
 
 | State | Correct |
 |---|---|
@@ -60,19 +64,19 @@ Shared-data protection: two queues (samples, results), a mutex for the UART, a m
 | Shaken | 17 / 20 |
 | **Overall** | **73 / 80 (91.2%)** |
 
-All 7 mistakes were predicted as "drinking". An early carried run, before the final one, scored 15 / 20.
+All 7 mistakes were predicted as "drinking". An earlier carried run scored 15 / 20.
 
-### Performance and resources
-- Inference time (50 runs, features plus tree): median 1638 µs, P95 1639 µs, max 1640 µs.
-- Flash: 21,488 B (2.0%). RAM: 51,660 B (39.4%), including the 48 KB FreeRTOS heap. Minimum free heap during the run: 33,744 B.
-- 15-minute run (`tools/soak.py`, `logs/soak_run.txt`): 906 predictions, longest gap between predictions 1000 ms, 0 queue drops, 0 IMU errors, 0 reboots.
+### Performance and resources (final firmware)
+- Inference time (50 runs, features plus tree): median 154 µs, P95 154 µs, max 154 µs. (On the earlier 16 MHz build it was 1638 µs.)
+- Flash: 22,096 B (2.1%). RAM: 51,660 B (39.4%), including the 48 KB FreeRTOS heap. Minimum free heap during the run: 33,744 B.
+- 15-minute run (`tools/soak.py`, `logs/soak_run.txt`): 901 predictions, longest gap between predictions 1000 ms, 0 queue drops, 0 IMU errors, 0 reboots, 0 serial drops.
 
 ## Limitations
 
 - Trained and tested by one person with one board, so it may be less accurate for other people.
 - Several tree rules use the x-axis, so the result depends on how the bottle is held.
 - Carried and shaken are sometimes mistaken for drinking, so a drink can be reported by mistake and reset the reminder timer.
-- The board runs on the 16 MHz internal clock, not the 168 MHz PLL.
+- The live trials were run on the earlier 16 MHz build and not repeated at 168 MHz.
 
 ## Build and run
 
@@ -93,10 +97,48 @@ The firmware is built with PlatformIO (`ststm32`, `stm32cube`) and FreeRTOS V11.
 4. Set `STREAM_CSV` back to 0, then build and upload.
 5. Test on the board: `python tools/trial.py`, and for the stability run `python tools/soak.py 15`.
 
+The Python tools use COM3. Change `PORT` at the top of each script if your board uses another port.
+
+## Data manifest
+
+| Item | Detail |
+|---|---|
+| Files | `data/<state>_<nn>.csv`, 6 recordings for each of resting, carried, drinking and shaken |
+| Length | 20 s each, about 1006 samples at 50 Hz |
+| Columns | `ms, ax, ay, az, gx, gy, gz, ps, als` |
+| Units | Raw sensor counts. Accelerometer 8192 LSB/g, gyroscope 65.5 LSB/dps, proximity and light as read from the AP3216C |
+| Subject | One person, the author. No personal data or identifiers |
+| Labels | Taken from the file name (the state that was performed) |
+| Split | By recording: sessions 1, 2, 4, 6 for training and 3, 5 for testing |
+| Trial results | `data/trials.csv`: `true, trial, predicted, correct` |
+| Model | `include/model.h` (generated), a decision tree of depth 5 on 28 features |
+
+## Troubleshooting
+
+| Problem | Fix |
+|---|---|
+| `LIBUSB_ERROR_NOT_FOUND` on upload | Install the ST-LINK driver (STSW-LINK009) on Windows. |
+| `Failed to read memory` or `timed out while waiting for target halted` | The `upload_flags` in `platformio.ini` (connect under reset) fix this. Keep them. |
+| Python tool says `Access is denied` on COM3 | Close the PlatformIO serial monitor first. Only one program can use the port. |
+| Link error about floating-point registers | Build with `-mfloat-abi=softfp` as in `platformio.ini`. |
+| FreeRTOS builds the wrong port | `lib/FreeRTOS/library.json` selects only the Cortex-M4F port and `heap_4.c`. |
+| Serial text is garbled | The clock is wrong. Check `src/clock.c` and `-DHSE_VALUE=8000000U` in `platformio.ini`. |
+
+## License and attribution
+
+- Project code: see `LICENSE`.
+- FreeRTOS kernel V11.1.0 (`lib/FreeRTOS`): MIT license, Amazon Web Services.
+- STM32Cube HAL and CMSIS: STMicroelectronics, used through the PlatformIO `stm32cube` framework.
+- LCD pin mapping and ST7789 start-up sequence: taken from the RT-Thread RT-Spark BSP (`drv_lcd.c`, Apache-2.0).
+- The 5×7 bitmap font table is a standard public-domain font.
+- Training uses numpy, pandas, scikit-learn and matplotlib.
+
 ## Repository layout
 
 ```
 src/main.c        firmware (tasks, drivers, inference)
+src/clock.c       168 MHz clock setup
+boards/           RT-Spark board file for PlatformIO
 include/          FreeRTOSConfig.h, model.h (generated by ml/train.py)
 lib/FreeRTOS/     FreeRTOS kernel
 ml/               training script and confusion matrix
@@ -108,6 +150,6 @@ logs/             15-minute run log
 ## Team
 
 - Cassandra Khan P. Mendoza: firmware, data, training
-- -: lab report
-- -: lab report
-- -: demo video
+- _: lab report
+- _: lab report
+- _: demo video
