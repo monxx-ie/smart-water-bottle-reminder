@@ -1,0 +1,1273 @@
+     0.7s  [1362205 ms] state=RESTING infer=1638 us
+     1.7s  [1363205 ms] state=RESTING infer=1638 us
+     2.7s  [1364205 ms] state=RESTING infer=1638 us
+     2.7s  [1364209 ms] REMINDER: drink water!
+     3.7s  [1365205 ms] state=RESTING infer=1638 us
+     4.7s  [1366205 ms] state=RESTING infer=1638 us
+     5.7s  [1367205 ms] state=RESTING infer=1638 us
+     6.7s  [1368205 ms] state=RESTING infer=1638 us
+     7.7s  [1369205 ms] state=RESTING infer=1638 us
+     8.5s  RTC 2026-10-20 19:16:04 (LSE)
+     8.5s  [1370007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+     8.5s  queue drops=0 imu_errors=0
+     8.7s  [1370205 ms] state=RESTING infer=1638 us
+     9.7s  [1371205 ms] state=RESTING infer=1638 us
+    10.7s  [1372205 ms] state=RESTING infer=1638 us
+    11.7s  [1373205 ms] state=RESTING infer=1638 us
+    12.7s  [1374205 ms] state=RESTING infer=1638 us
+    12.7s  [1374209 ms] REMINDER: drink water!
+    13.6s  [1375205 ms] state=RESTING infer=1638 us
+    14.6s  [1376205 ms] state=RESTING infer=1638 us
+    15.6s  [1377205 ms] state=RESTING infer=1638 us
+    16.6s  [1378205 ms] state=RESTING infer=1638 us
+    17.6s  [1379205 ms] state=RESTING infer=1638 us
+    18.4s  RTC 2026-10-20 19:16:14 (LSE)
+    18.4s  [1380007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    18.4s  queue drops=0 imu_errors=0
+    18.6s  [1380205 ms] state=RESTING infer=1638 us
+    19.6s  [1381205 ms] state=RESTING infer=1638 us
+    20.6s  [1382205 ms] state=RESTING infer=1638 us
+    21.6s  [1383205 ms] state=RESTING infer=1638 us
+    22.6s  [1384205 ms] state=RESTING infer=1638 us
+    22.6s  [1384209 ms] REMINDER: drink water!
+    23.6s  [1385205 ms] state=RESTING infer=1638 us
+    24.6s  [1386205 ms] state=RESTING infer=1638 us
+    25.6s  [1387205 ms] state=RESTING infer=1638 us
+    26.6s  [1388205 ms] state=RESTING infer=1638 us
+    27.6s  [1389205 ms] state=RESTING infer=1638 us
+    28.4s  RTC 2026-10-20 19:16:24 (LSE)
+    28.4s  [1390007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    28.4s  queue drops=0 imu_errors=0
+    28.6s  [1390205 ms] state=RESTING infer=1638 us
+    29.6s  [1391205 ms] state=RESTING infer=1638 us
+    30.6s  [1392205 ms] state=RESTING infer=1638 us
+    31.5s  [1393205 ms] state=RESTING infer=1638 us
+    32.5s  [1394205 ms] state=RESTING infer=1638 us
+    32.5s  [1394209 ms] REMINDER: drink water!
+    33.5s  [1395205 ms] state=RESTING infer=1638 us
+    34.5s  [1396205 ms] state=RESTING infer=1638 us
+    35.5s  [1397205 ms] state=RESTING infer=1638 us
+    36.5s  [1398205 ms] state=RESTING infer=1638 us
+    37.5s  [1399205 ms] state=RESTING infer=1638 us
+    38.3s  RTC 2026-10-20 19:16:34 (LSE)
+    38.3s  [1400007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    38.3s  queue drops=0 imu_errors=0
+    38.5s  [1400205 ms] state=RESTING infer=1638 us
+    39.5s  [1401205 ms] state=RESTING infer=1638 us
+    39.5s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+    40.5s  [1402205 ms] state=RESTING infer=1638 us
+    41.5s  [1403205 ms] state=RESTING infer=1638 us
+    42.5s  [1404205 ms] state=RESTING infer=1638 us
+    42.5s  [1404209 ms] REMINDER: drink water!
+    43.5s  [1405205 ms] state=RESTING infer=1638 us
+    44.5s  [1406205 ms] state=RESTING infer=1638 us
+    45.5s  [1407205 ms] state=RESTING infer=1638 us
+    46.5s  [1408205 ms] state=RESTING infer=1638 us
+    47.5s  [1409205 ms] state=RESTING infer=1638 us
+    48.3s  RTC 2026-10-20 19:16:44 (LSE)
+    48.3s  [1410007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    48.3s  queue drops=0 imu_errors=0
+    48.5s  [1410205 ms] state=RESTING infer=1638 us
+    49.5s  [1411205 ms] state=RESTING infer=1638 us
+    50.4s  [1412205 ms] state=RESTING infer=1638 us
+    51.4s  [1413205 ms] state=RESTING infer=1638 us
+    52.4s  [1414205 ms] state=RESTING infer=1638 us
+    52.4s  [1414209 ms] REMINDER: drink water!
+    53.4s  [1415205 ms] state=RESTING infer=1638 us
+    54.4s  [1416205 ms] state=RESTING infer=1638 us
+    55.4s  [1417205 ms] state=RESTING infer=1638 us
+    56.4s  [1418205 ms] state=RESTING infer=1638 us
+    57.4s  [1419205 ms] state=RESTING infer=1638 us
+    58.2s  RTC 2026-10-20 19:16:54 (LSE)
+    58.2s  [1420007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    58.2s  queue drops=0 imu_errors=0
+    58.4s  [1420205 ms] state=RESTING infer=1638 us
+    59.4s  [1421205 ms] state=RESTING infer=1638 us
+    60.4s  [1422205 ms] state=RESTING infer=1638 us
+    61.4s  [1423205 ms] state=RESTING infer=1638 us
+    62.4s  [1424205 ms] state=RESTING infer=1638 us
+    62.4s  [1424209 ms] REMINDER: drink water!
+    63.4s  [1425205 ms] state=RESTING infer=1638 us
+    64.4s  [1426205 ms] state=RESTING infer=1638 us
+    65.4s  [1427205 ms] state=RESTING infer=1638 us
+    66.4s  [1428205 ms] state=RESTING infer=1638 us
+    67.4s  [1429205 ms] state=RESTING infer=1638 us
+    68.1s  RTC 2026-10-20 19:17:03 (LSE)
+    68.2s  [1430007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    68.2s  queue drops=0 imu_errors=0
+    68.3s  [1430205 ms] state=RESTING infer=1638 us
+    69.3s  [1431205 ms] state=RESTING infer=1638 us
+    70.3s  [1432205 ms] state=RESTING infer=1638 us
+    71.3s  [1433205 ms] state=RESTING infer=1638 us
+    72.3s  [1434205 ms] state=RESTING infer=1638 us
+    72.3s  [1434209 ms] REMINDER: drink water!
+    73.3s  [1435205 ms] state=RESTING infer=1638 us
+    74.3s  [1436205 ms] state=RESTING infer=1638 us
+    75.3s  [1437205 ms] state=RESTING infer=1638 us
+    76.3s  [1438205 ms] state=RESTING infer=1638 us
+    77.3s  [1439205 ms] state=RESTING infer=1638 us
+    78.1s  RTC 2026-10-20 19:17:13 (LSE)
+    78.1s  [1440007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    78.1s  queue drops=0 imu_errors=0
+    78.3s  [1440205 ms] state=RESTING infer=1638 us
+    79.3s  [1441205 ms] state=RESTING infer=1638 us
+    80.3s  [1442205 ms] state=RESTING infer=1638 us
+    81.3s  [1443205 ms] state=RESTING infer=1638 us
+    82.3s  [1444205 ms] state=RESTING infer=1638 us
+    82.3s  [1444209 ms] REMINDER: drink water!
+    83.3s  [1445205 ms] state=RESTING infer=1638 us
+    84.3s  [1446205 ms] state=RESTING infer=1638 us
+    85.3s  [1447205 ms] state=RESTING infer=1638 us
+    86.3s  [1448205 ms] state=RESTING infer=1638 us
+    87.2s  [1449205 ms] state=RESTING infer=1638 us
+    88.0s  RTC 2026-10-20 19:17:23 (LSE)
+    88.1s  [1450007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    88.1s  queue drops=0 imu_errors=0
+    88.2s  [1450205 ms] state=RESTING infer=1638 us
+    89.2s  [1451205 ms] state=RESTING infer=1638 us
+    89.2s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+    90.2s  [1452205 ms] state=RESTING infer=1638 us
+    91.2s  [1453205 ms] state=RESTING infer=1638 us
+    92.2s  [1454205 ms] state=RESTING infer=1638 us
+    92.2s  [1454209 ms] REMINDER: drink water!
+    93.2s  [1455205 ms] state=RESTING infer=1638 us
+    94.2s  [1456205 ms] state=RESTING infer=1638 us
+    95.2s  [1457205 ms] state=RESTING infer=1638 us
+    96.2s  [1458205 ms] state=RESTING infer=1638 us
+    97.2s  [1459205 ms] state=RESTING infer=1638 us
+    98.0s  RTC 2026-10-20 19:17:33 (LSE)
+    98.0s  [1460007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+    98.0s  queue drops=0 imu_errors=0
+    98.2s  [1460205 ms] state=RESTING infer=1638 us
+    99.2s  [1461205 ms] state=RESTING infer=1638 us
+   100.2s  [1462205 ms] state=RESTING infer=1638 us
+   101.2s  [1463205 ms] state=RESTING infer=1638 us
+   102.2s  [1464205 ms] state=RESTING infer=1638 us
+   102.2s  [1464209 ms] REMINDER: drink water!
+   103.2s  [1465205 ms] state=RESTING infer=1638 us
+   104.2s  [1466205 ms] state=RESTING infer=1638 us
+   105.2s  [1467205 ms] state=RESTING infer=1638 us
+   106.2s  [1468205 ms] state=RESTING infer=1638 us
+   107.1s  [1469205 ms] state=RESTING infer=1638 us
+   107.9s  RTC 2026-10-20 19:17:43 (LSE)
+   108.0s  [1470007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   108.0s  queue drops=0 imu_errors=0
+   108.1s  [1470205 ms] state=RESTING infer=1638 us
+   109.1s  [1471205 ms] state=RESTING infer=1638 us
+   110.1s  [1472205 ms] state=RESTING infer=1638 us
+   111.1s  [1473205 ms] state=RESTING infer=1638 us
+   112.1s  [1474205 ms] state=RESTING infer=1638 us
+   112.1s  [1474209 ms] REMINDER: drink water!
+   113.1s  [1475205 ms] state=RESTING infer=1638 us
+   114.1s  [1476205 ms] state=RESTING infer=1638 us
+   115.1s  [1477205 ms] state=RESTING infer=1638 us
+   116.1s  [1478205 ms] state=RESTING infer=1638 us
+   117.1s  [1479205 ms] state=RESTING infer=1638 us
+   117.9s  RTC 2026-10-20 19:17:53 (LSE)
+   117.9s  [1480007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   117.9s  queue drops=0 imu_errors=0
+   118.1s  [1480205 ms] state=RESTING infer=1638 us
+   119.1s  [1481205 ms] state=RESTING infer=1638 us
+   120.1s  [1482205 ms] state=RESTING infer=1638 us
+   121.1s  [1483205 ms] state=RESTING infer=1638 us
+   122.1s  [1484205 ms] state=DRINKING infer=1640 us
+   123.1s  [1485205 ms] state=DRINKING infer=1640 us
+   124.1s  [1486205 ms] state=RESTING infer=1638 us
+   125.1s  [1487205 ms] state=RESTING infer=1638 us
+   126.0s  [1488205 ms] state=RESTING infer=1638 us
+   127.0s  [1489205 ms] state=RESTING infer=1638 us
+   127.8s  RTC 2026-10-20 19:18:03 (LSE)
+   127.8s  [1490007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   127.9s  queue drops=0 imu_errors=0
+   128.0s  [1490205 ms] state=RESTING infer=1638 us
+   129.0s  [1491205 ms] state=RESTING infer=1638 us
+   130.0s  [1492205 ms] state=RESTING infer=1638 us
+   131.0s  [1493205 ms] state=RESTING infer=1638 us
+   132.0s  [1494205 ms] state=RESTING infer=1638 us
+   133.0s  [1495205 ms] state=RESTING infer=1638 us
+   134.0s  [1496205 ms] state=RESTING infer=1638 us
+   135.0s  [1497205 ms] state=RESTING infer=1638 us
+   136.0s  [1498205 ms] state=RESTING infer=1638 us
+   137.0s  [1499205 ms] state=RESTING infer=1638 us
+   137.8s  RTC 2026-10-20 19:18:13 (LSE)
+   137.8s  [1500007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   137.8s  queue drops=0 imu_errors=0
+   138.0s  [1500205 ms] state=RESTING infer=1638 us
+   139.0s  [1501205 ms] state=RESTING infer=1638 us
+   139.0s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1640 us
+   140.0s  [1502205 ms] state=RESTING infer=1638 us
+   141.0s  [1503205 ms] state=RESTING infer=1638 us
+   142.0s  [1504205 ms] state=RESTING infer=1638 us
+   143.0s  [1505205 ms] state=RESTING infer=1638 us
+   143.9s  [1506205 ms] state=RESTING infer=1638 us
+   144.9s  [1507205 ms] state=RESTING infer=1638 us
+   145.9s  [1508205 ms] state=RESTING infer=1638 us
+   146.9s  [1509205 ms] state=RESTING infer=1638 us
+   147.7s  RTC 2026-10-20 19:18:23 (LSE)
+   147.7s  [1510007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   147.7s  queue drops=0 imu_errors=0
+   147.9s  [1510205 ms] state=RESTING infer=1638 us
+   148.9s  [1511205 ms] state=RESTING infer=1638 us
+   149.9s  [1512205 ms] state=RESTING infer=1638 us
+   150.9s  [1513205 ms] state=RESTING infer=1638 us
+   151.9s  [1514205 ms] state=RESTING infer=1638 us
+   152.9s  [1515205 ms] state=RESTING infer=1638 us
+   152.9s  [1515209 ms] REMINDER: drink water!
+   153.9s  [1516205 ms] state=RESTING infer=1638 us
+   154.9s  [1517205 ms] state=RESTING infer=1638 us
+   155.9s  [1518205 ms] state=RESTING infer=1638 us
+   156.9s  [1519205 ms] state=RESTING infer=1638 us
+   157.7s  RTC 2026-10-20 19:18:33 (LSE)
+   157.7s  [1520007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   157.7s  queue drops=0 imu_errors=0
+   157.9s  [1520205 ms] state=RESTING infer=1638 us
+   158.9s  [1521205 ms] state=RESTING infer=1638 us
+   159.9s  [1522205 ms] state=RESTING infer=1638 us
+   160.9s  [1523205 ms] state=RESTING infer=1638 us
+   161.8s  [1524205 ms] state=RESTING infer=1638 us
+   162.8s  [1525205 ms] state=RESTING infer=1638 us
+   162.8s  [1525209 ms] REMINDER: drink water!
+   163.8s  [1526205 ms] state=RESTING infer=1638 us
+   164.8s  [1527205 ms] state=RESTING infer=1638 us
+   165.8s  [1528205 ms] state=RESTING infer=1638 us
+   166.8s  [1529205 ms] state=RESTING infer=1638 us
+   167.6s  RTC 2026-10-20 19:18:43 (LSE)
+   167.6s  [1530007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   167.6s  queue drops=0 imu_errors=0
+   167.8s  [1530205 ms] state=RESTING infer=1638 us
+   168.8s  [1531205 ms] state=RESTING infer=1638 us
+   169.8s  [1532205 ms] state=RESTING infer=1638 us
+   170.8s  [1533205 ms] state=RESTING infer=1638 us
+   171.8s  [1534205 ms] state=RESTING infer=1638 us
+   172.8s  [1535205 ms] state=RESTING infer=1638 us
+   172.8s  [1535209 ms] REMINDER: drink water!
+   173.8s  [1536205 ms] state=RESTING infer=1638 us
+   174.8s  [1537205 ms] state=RESTING infer=1638 us
+   175.8s  [1538205 ms] state=RESTING infer=1638 us
+   176.8s  [1539205 ms] state=RESTING infer=1638 us
+   177.6s  RTC 2026-10-20 19:18:53 (LSE)
+   177.6s  [1540007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   177.6s  queue drops=0 imu_errors=0
+   177.8s  [1540205 ms] state=RESTING infer=1638 us
+   178.8s  [1541205 ms] state=RESTING infer=1638 us
+   179.8s  [1542205 ms] state=RESTING infer=1638 us
+   180.7s  [1543205 ms] state=RESTING infer=1638 us
+   181.7s  [1544205 ms] state=RESTING infer=1638 us
+   182.7s  [1545205 ms] state=RESTING infer=1638 us
+   182.7s  [1545209 ms] REMINDER: drink water!
+   183.7s  [1546205 ms] state=RESTING infer=1638 us
+   184.7s  [1547205 ms] state=RESTING infer=1638 us
+   185.7s  [1548205 ms] state=RESTING infer=1638 us
+   186.7s  [1549205 ms] state=RESTING infer=1638 us
+   187.5s  RTC 2026-10-20 19:19:03 (LSE)
+   187.5s  [1550007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   187.5s  queue drops=0 imu_errors=0
+   187.7s  [1550205 ms] state=RESTING infer=1638 us
+   188.7s  [1551205 ms] state=RESTING infer=1638 us
+   188.7s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   189.7s  [1552205 ms] state=RESTING infer=1638 us
+   190.7s  [1553205 ms] state=RESTING infer=1638 us
+   191.7s  [1554205 ms] state=RESTING infer=1638 us
+   192.7s  [1555205 ms] state=RESTING infer=1638 us
+   192.7s  [1555209 ms] REMINDER: drink water!
+   193.7s  [1556205 ms] state=RESTING infer=1638 us
+   194.7s  [1557205 ms] state=RESTING infer=1638 us
+   195.7s  [1558205 ms] state=RESTING infer=1638 us
+   196.7s  [1559205 ms] state=RESTING infer=1638 us
+   197.5s  RTC 2026-10-20 19:19:13 (LSE)
+   197.5s  [1560007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   197.5s  queue drops=0 imu_errors=0
+   197.7s  [1560205 ms] state=RESTING infer=1638 us
+   198.6s  [1561205 ms] state=RESTING infer=1638 us
+   199.6s  [1562205 ms] state=RESTING infer=1638 us
+   200.6s  [1563205 ms] state=RESTING infer=1638 us
+   201.6s  [1564205 ms] state=RESTING infer=1638 us
+   202.6s  [1565205 ms] state=RESTING infer=1638 us
+   202.6s  [1565209 ms] REMINDER: drink water!
+   203.6s  [1566205 ms] state=RESTING infer=1638 us
+   204.6s  [1567205 ms] state=RESTING infer=1638 us
+   205.6s  [1568205 ms] state=RESTING infer=1638 us
+   206.6s  [1569205 ms] state=RESTING infer=1638 us
+   207.4s  RTC 2026-10-20 19:19:23 (LSE)
+   207.4s  [1570007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   207.4s  queue drops=0 imu_errors=0
+   207.6s  [1570205 ms] state=RESTING infer=1638 us
+   208.6s  [1571205 ms] state=RESTING infer=1638 us
+   209.6s  [1572205 ms] state=RESTING infer=1638 us
+   210.6s  [1573205 ms] state=RESTING infer=1638 us
+   211.6s  [1574205 ms] state=RESTING infer=1638 us
+   212.6s  [1575205 ms] state=RESTING infer=1638 us
+   212.6s  [1575209 ms] REMINDER: drink water!
+   213.6s  [1576205 ms] state=RESTING infer=1638 us
+   214.6s  [1577205 ms] state=RESTING infer=1638 us
+   215.6s  [1578205 ms] state=RESTING infer=1638 us
+   216.5s  [1579205 ms] state=RESTING infer=1638 us
+   217.3s  RTC 2026-10-20 19:19:33 (LSE)
+   217.4s  [1580007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   217.4s  queue drops=0 imu_errors=0
+   217.5s  [1580205 ms] state=RESTING infer=1638 us
+   218.5s  [1581205 ms] state=RESTING infer=1638 us
+   219.5s  [1582205 ms] state=RESTING infer=1638 us
+   220.5s  [1583205 ms] state=RESTING infer=1638 us
+   221.5s  [1584205 ms] state=RESTING infer=1638 us
+   222.5s  [1585205 ms] state=RESTING infer=1638 us
+   222.5s  [1585209 ms] REMINDER: drink water!
+   223.5s  [1586205 ms] state=RESTING infer=1638 us
+   224.5s  [1587205 ms] state=RESTING infer=1638 us
+   225.5s  [1588205 ms] state=RESTING infer=1638 us
+   226.5s  [1589205 ms] state=RESTING infer=1638 us
+   227.3s  RTC 2026-10-20 19:19:43 (LSE)
+   227.3s  [1590007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   227.3s  queue drops=0 imu_errors=0
+   227.5s  [1590205 ms] state=RESTING infer=1638 us
+   228.5s  [1591205 ms] state=RESTING infer=1638 us
+   229.5s  [1592205 ms] state=RESTING infer=1638 us
+   230.5s  [1593205 ms] state=RESTING infer=1638 us
+   231.5s  [1594205 ms] state=RESTING infer=1638 us
+   232.5s  [1595205 ms] state=RESTING infer=1638 us
+   232.5s  [1595209 ms] REMINDER: drink water!
+   233.5s  [1596205 ms] state=RESTING infer=1638 us
+   234.4s  [1597205 ms] state=RESTING infer=1638 us
+   235.4s  [1598205 ms] state=RESTING infer=1638 us
+   236.4s  [1599205 ms] state=RESTING infer=1638 us
+   237.2s  RTC 2026-10-20 19:19:53 (LSE)
+   237.2s  [1600007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   237.2s  queue drops=0 imu_errors=0
+   237.4s  [1600205 ms] state=RESTING infer=1638 us
+   238.4s  [1601205 ms] state=RESTING infer=1638 us
+   238.4s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   239.4s  [1602205 ms] state=RESTING infer=1638 us
+   240.4s  [1603205 ms] state=RESTING infer=1638 us
+   241.4s  [1604205 ms] state=RESTING infer=1638 us
+   242.4s  [1605205 ms] state=RESTING infer=1638 us
+   242.4s  [1605209 ms] REMINDER: drink water!
+   243.4s  [1606205 ms] state=RESTING infer=1638 us
+   244.4s  [1607205 ms] state=RESTING infer=1638 us
+   245.4s  [1608205 ms] state=RESTING infer=1638 us
+   246.4s  [1609205 ms] state=RESTING infer=1638 us
+   247.2s  RTC 2026-10-20 19:20:03 (LSE)
+   247.2s  [1610007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   247.2s  queue drops=0 imu_errors=0
+   247.4s  [1610205 ms] state=RESTING infer=1638 us
+   248.4s  [1611205 ms] state=RESTING infer=1638 us
+   249.4s  [1612205 ms] state=RESTING infer=1638 us
+   250.4s  [1613205 ms] state=RESTING infer=1638 us
+   251.4s  [1614205 ms] state=RESTING infer=1638 us
+   252.4s  [1615205 ms] state=RESTING infer=1638 us
+   252.4s  [1615209 ms] REMINDER: drink water!
+   253.4s  [1616205 ms] state=RESTING infer=1638 us
+   254.3s  [1617205 ms] state=RESTING infer=1638 us
+   255.3s  [1618205 ms] state=RESTING infer=1638 us
+   256.3s  [1619205 ms] state=RESTING infer=1638 us
+   257.1s  RTC 2026-10-20 19:20:12 (LSE)
+   257.1s  [1620007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   257.1s  queue drops=0 imu_errors=0
+   257.3s  [1620205 ms] state=RESTING infer=1638 us
+   258.3s  [1621205 ms] state=RESTING infer=1638 us
+   259.3s  [1622205 ms] state=RESTING infer=1638 us
+   260.3s  [1623205 ms] state=RESTING infer=1638 us
+   261.3s  [1624205 ms] state=RESTING infer=1638 us
+   262.3s  [1625205 ms] state=RESTING infer=1638 us
+   262.3s  [1625209 ms] REMINDER: drink water!
+   263.3s  [1626205 ms] state=RESTING infer=1638 us
+   264.3s  [1627205 ms] state=RESTING infer=1638 us
+   265.3s  [1628205 ms] state=RESTING infer=1638 us
+   266.3s  [1629205 ms] state=RESTING infer=1638 us
+   267.1s  RTC 2026-10-20 19:20:22 (LSE)
+   267.1s  [1630007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   267.1s  queue drops=0 imu_errors=0
+   267.3s  [1630205 ms] state=RESTING infer=1638 us
+   268.3s  [1631205 ms] state=RESTING infer=1638 us
+   269.3s  [1632205 ms] state=RESTING infer=1638 us
+   270.3s  [1633205 ms] state=RESTING infer=1638 us
+   271.3s  [1634205 ms] state=RESTING infer=1638 us
+   272.2s  [1635205 ms] state=RESTING infer=1638 us
+   272.3s  [1635209 ms] REMINDER: drink water!
+   273.2s  [1636205 ms] state=RESTING infer=1638 us
+   274.2s  [1637205 ms] state=RESTING infer=1638 us
+   275.2s  [1638205 ms] state=RESTING infer=1638 us
+   276.2s  [1639205 ms] state=RESTING infer=1638 us
+   277.0s  RTC 2026-10-20 19:20:32 (LSE)
+   277.0s  [1640007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   277.0s  queue drops=0 imu_errors=0
+   277.2s  [1640205 ms] state=RESTING infer=1638 us
+   278.2s  [1641205 ms] state=RESTING infer=1638 us
+   279.2s  [1642205 ms] state=RESTING infer=1638 us
+   280.2s  [1643205 ms] state=RESTING infer=1638 us
+   281.2s  [1644205 ms] state=RESTING infer=1638 us
+   282.2s  [1645205 ms] state=RESTING infer=1638 us
+   282.2s  [1645209 ms] REMINDER: drink water!
+   283.2s  [1646205 ms] state=RESTING infer=1638 us
+   284.2s  [1647205 ms] state=RESTING infer=1638 us
+   285.2s  [1648205 ms] state=RESTING infer=1638 us
+   286.2s  [1649205 ms] state=RESTING infer=1638 us
+   287.0s  RTC 2026-10-20 19:20:42 (LSE)
+   287.0s  [1650007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   287.0s  queue drops=0 imu_errors=0
+   287.2s  [1650205 ms] state=RESTING infer=1638 us
+   288.2s  [1651205 ms] state=RESTING infer=1638 us
+   288.2s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   289.2s  [1652205 ms] state=RESTING infer=1638 us
+   290.2s  [1653205 ms] state=RESTING infer=1638 us
+   291.2s  [1654205 ms] state=RESTING infer=1638 us
+   292.2s  [1655205 ms] state=RESTING infer=1638 us
+   292.2s  [1655209 ms] REMINDER: drink water!
+   293.1s  [1656205 ms] state=RESTING infer=1638 us
+   294.1s  [1657205 ms] state=RESTING infer=1638 us
+   295.1s  [1658205 ms] state=RESTING infer=1638 us
+   296.1s  [1659205 ms] state=RESTING infer=1638 us
+   296.9s  RTC 2026-10-20 19:20:52 (LSE)
+   296.9s  [1660007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   296.9s  queue drops=0 imu_errors=0
+   297.1s  [1660205 ms] state=RESTING infer=1638 us
+   298.1s  [1661205 ms] state=RESTING infer=1638 us
+   299.1s  [1662205 ms] state=RESTING infer=1638 us
+   300.1s  [1663205 ms] state=RESTING infer=1638 us
+   301.1s  [1664205 ms] state=RESTING infer=1638 us
+   302.1s  [1665205 ms] state=RESTING infer=1638 us
+   302.1s  [1665209 ms] REMINDER: drink water!
+   303.1s  [1666205 ms] state=DRINKING infer=1640 us
+   304.1s  [1667205 ms] state=DRINKING infer=1639 us
+   305.1s  [1668205 ms] state=DRINKING infer=1639 us
+   306.1s  [1669205 ms] state=DRINKING infer=1639 us
+   306.9s  RTC 2026-10-20 19:21:02 (LSE)
+   306.9s  [1670007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   306.9s  queue drops=0 imu_errors=0
+   307.1s  [1670205 ms] state=DRINKING infer=1639 us
+   308.1s  [1671205 ms] state=DRINKING infer=1640 us
+   309.1s  [1672205 ms] state=RESTING infer=1638 us
+   310.1s  [1673205 ms] state=RESTING infer=1638 us
+   311.1s  [1674205 ms] state=RESTING infer=1638 us
+   312.1s  [1675205 ms] state=RESTING infer=1638 us
+   313.0s  [1676205 ms] state=RESTING infer=1638 us
+   314.0s  [1677205 ms] state=RESTING infer=1638 us
+   315.0s  [1678205 ms] state=RESTING infer=1638 us
+   316.0s  [1679205 ms] state=RESTING infer=1638 us
+   316.8s  RTC 2026-10-20 19:21:12 (LSE)
+   316.8s  [1680007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   316.8s  queue drops=0 imu_errors=0
+   317.0s  [1680205 ms] state=RESTING infer=1638 us
+   318.0s  [1681205 ms] state=RESTING infer=1638 us
+   319.0s  [1682205 ms] state=RESTING infer=1638 us
+   320.0s  [1683205 ms] state=RESTING infer=1638 us
+   321.0s  [1684205 ms] state=RESTING infer=1638 us
+   322.0s  [1685205 ms] state=RESTING infer=1638 us
+   323.0s  [1686205 ms] state=RESTING infer=1638 us
+   324.0s  [1687205 ms] state=RESTING infer=1638 us
+   325.0s  [1688205 ms] state=RESTING infer=1638 us
+   326.0s  [1689205 ms] state=RESTING infer=1638 us
+   326.8s  RTC 2026-10-20 19:21:22 (LSE)
+   326.8s  [1690007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   326.8s  queue drops=0 imu_errors=0
+   327.0s  [1690205 ms] state=RESTING infer=1638 us
+   328.0s  [1691205 ms] state=RESTING infer=1638 us
+   329.0s  [1692205 ms] state=RESTING infer=1638 us
+   330.0s  [1693205 ms] state=RESTING infer=1638 us
+   330.9s  [1694205 ms] state=RESTING infer=1638 us
+   331.9s  [1695205 ms] state=RESTING infer=1638 us
+   332.9s  [1696205 ms] state=RESTING infer=1638 us
+   333.9s  [1697205 ms] state=RESTING infer=1638 us
+   334.9s  [1698205 ms] state=RESTING infer=1638 us
+   335.9s  [1699205 ms] state=RESTING infer=1638 us
+   336.7s  RTC 2026-10-20 19:21:32 (LSE)
+   336.7s  [1700007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   336.7s  queue drops=0 imu_errors=0
+   336.9s  [1700205 ms] state=RESTING infer=1638 us
+   337.9s  [1701205 ms] state=RESTING infer=1638 us
+   337.9s  INFER TIMING (50 runs): median=1638 us p95=1639 us max=1640 us
+   337.9s  [1701215 ms] REMINDER: drink water!
+   338.9s  [1702205 ms] state=RESTING infer=1638 us
+   339.9s  [1703205 ms] state=RESTING infer=1638 us
+   340.9s  [1704205 ms] state=RESTING infer=1638 us
+   341.9s  [1705205 ms] state=RESTING infer=1638 us
+   342.9s  [1706205 ms] state=RESTING infer=1638 us
+   343.9s  [1707205 ms] state=RESTING infer=1638 us
+   344.9s  [1708205 ms] state=RESTING infer=1638 us
+   345.9s  [1709205 ms] state=RESTING infer=1638 us
+   346.7s  RTC 2026-10-20 19:21:42 (LSE)
+   346.7s  [1710007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   346.7s  queue drops=0 imu_errors=0
+   346.9s  [1710205 ms] state=RESTING infer=1638 us
+   347.8s  [1711205 ms] state=RESTING infer=1638 us
+   348.8s  [1712205 ms] state=RESTING infer=1638 us
+   348.8s  [1712209 ms] REMINDER: drink water!
+   349.8s  [1713205 ms] state=RESTING infer=1638 us
+   350.8s  [1714205 ms] state=RESTING infer=1638 us
+   351.8s  [1715205 ms] state=RESTING infer=1638 us
+   352.8s  [1716205 ms] state=RESTING infer=1638 us
+   353.8s  [1717205 ms] state=RESTING infer=1638 us
+   354.8s  [1718205 ms] state=RESTING infer=1638 us
+   355.8s  [1719205 ms] state=RESTING infer=1638 us
+   356.6s  RTC 2026-10-20 19:21:52 (LSE)
+   356.6s  [1720007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   356.6s  queue drops=0 imu_errors=0
+   356.8s  [1720205 ms] state=RESTING infer=1638 us
+   357.8s  [1721205 ms] state=RESTING infer=1638 us
+   358.8s  [1722205 ms] state=RESTING infer=1638 us
+   358.8s  [1722209 ms] REMINDER: drink water!
+   359.8s  [1723205 ms] state=RESTING infer=1638 us
+   360.8s  [1724205 ms] state=RESTING infer=1638 us
+   361.8s  [1725205 ms] state=RESTING infer=1638 us
+   362.8s  [1726205 ms] state=RESTING infer=1638 us
+   363.8s  [1727205 ms] state=RESTING infer=1638 us
+   364.7s  [1728205 ms] state=RESTING infer=1638 us
+   365.7s  [1729205 ms] state=RESTING infer=1638 us
+   366.5s  RTC 2026-10-20 19:22:02 (LSE)
+   366.5s  [1730007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   366.6s  queue drops=0 imu_errors=0
+   366.7s  [1730205 ms] state=RESTING infer=1638 us
+   367.7s  [1731205 ms] state=RESTING infer=1638 us
+   368.7s  [1732205 ms] state=RESTING infer=1638 us
+   368.7s  [1732209 ms] REMINDER: drink water!
+   369.7s  [1733205 ms] state=RESTING infer=1638 us
+   370.7s  [1734205 ms] state=RESTING infer=1638 us
+   371.7s  [1735205 ms] state=RESTING infer=1638 us
+   372.7s  [1736205 ms] state=RESTING infer=1638 us
+   373.7s  [1737205 ms] state=RESTING infer=1638 us
+   374.7s  [1738205 ms] state=RESTING infer=1638 us
+   375.7s  [1739205 ms] state=RESTING infer=1638 us
+   376.5s  RTC 2026-10-20 19:22:12 (LSE)
+   376.5s  [1740007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   376.5s  queue drops=0 imu_errors=0
+   376.7s  [1740205 ms] state=RESTING infer=1638 us
+   377.7s  [1741205 ms] state=RESTING infer=1638 us
+   378.7s  [1742205 ms] state=RESTING infer=1638 us
+   378.7s  [1742209 ms] REMINDER: drink water!
+   379.7s  [1743205 ms] state=RESTING infer=1638 us
+   380.7s  [1744205 ms] state=RESTING infer=1638 us
+   381.6s  [1745205 ms] state=RESTING infer=1638 us
+   382.6s  [1746205 ms] state=RESTING infer=1638 us
+   383.6s  [1747205 ms] state=RESTING infer=1638 us
+   384.6s  [1748205 ms] state=RESTING infer=1638 us
+   385.6s  [1749205 ms] state=RESTING infer=1638 us
+   386.4s  RTC 2026-10-20 19:22:22 (LSE)
+   386.4s  [1750007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   386.4s  queue drops=0 imu_errors=0
+   386.6s  [1750205 ms] state=RESTING infer=1638 us
+   387.6s  [1751205 ms] state=RESTING infer=1638 us
+   387.6s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   388.6s  [1752205 ms] state=RESTING infer=1638 us
+   388.6s  [1752209 ms] REMINDER: drink water!
+   389.6s  [1753205 ms] state=RESTING infer=1638 us
+   390.6s  [1754205 ms] state=RESTING infer=1638 us
+   391.6s  [1755205 ms] state=RESTING infer=1638 us
+   392.6s  [1756205 ms] state=RESTING infer=1638 us
+   393.6s  [1757205 ms] state=RESTING infer=1638 us
+   394.6s  [1758205 ms] state=RESTING infer=1638 us
+   395.6s  [1759205 ms] state=RESTING infer=1638 us
+   396.4s  RTC 2026-10-20 19:22:32 (LSE)
+   396.4s  [1760007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   396.4s  queue drops=0 imu_errors=0
+   396.6s  [1760205 ms] state=RESTING infer=1638 us
+   397.6s  [1761205 ms] state=RESTING infer=1638 us
+   398.6s  [1762205 ms] state=RESTING infer=1638 us
+   398.6s  [1762209 ms] REMINDER: drink water!
+   399.5s  [1763205 ms] state=RESTING infer=1638 us
+   400.5s  [1764205 ms] state=RESTING infer=1638 us
+   401.5s  [1765205 ms] state=RESTING infer=1638 us
+   402.5s  [1766205 ms] state=RESTING infer=1638 us
+   403.5s  [1767205 ms] state=RESTING infer=1638 us
+   404.5s  [1768205 ms] state=RESTING infer=1638 us
+   405.5s  [1769205 ms] state=RESTING infer=1638 us
+   406.3s  RTC 2026-10-20 19:22:42 (LSE)
+   406.3s  [1770007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   406.3s  queue drops=0 imu_errors=0
+   406.5s  [1770205 ms] state=RESTING infer=1638 us
+   407.5s  [1771205 ms] state=RESTING infer=1638 us
+   408.5s  [1772205 ms] state=RESTING infer=1638 us
+   408.5s  [1772209 ms] REMINDER: drink water!
+   409.5s  [1773205 ms] state=RESTING infer=1638 us
+   410.5s  [1774205 ms] state=RESTING infer=1638 us
+   411.5s  [1775205 ms] state=RESTING infer=1638 us
+   412.5s  [1776205 ms] state=RESTING infer=1638 us
+   413.5s  [1777205 ms] state=RESTING infer=1638 us
+   414.5s  [1778205 ms] state=RESTING infer=1638 us
+   415.5s  [1779205 ms] state=RESTING infer=1638 us
+   416.2s  RTC 2026-10-20 19:22:52 (LSE)
+   416.3s  [1780007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   416.3s  queue drops=0 imu_errors=0
+   416.4s  [1780205 ms] state=RESTING infer=1638 us
+   417.4s  [1781205 ms] state=RESTING infer=1638 us
+   418.4s  [1782205 ms] state=RESTING infer=1638 us
+   418.4s  [1782209 ms] REMINDER: drink water!
+   419.4s  [1783205 ms] state=RESTING infer=1638 us
+   420.4s  [1784205 ms] state=RESTING infer=1638 us
+   421.4s  [1785205 ms] state=RESTING infer=1638 us
+   422.4s  [1786205 ms] state=RESTING infer=1638 us
+   423.4s  [1787205 ms] state=RESTING infer=1638 us
+   424.4s  [1788205 ms] state=RESTING infer=1638 us
+   425.4s  [1789205 ms] state=RESTING infer=1638 us
+   426.2s  RTC 2026-10-20 19:23:02 (LSE)
+   426.2s  [1790007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   426.2s  queue drops=0 imu_errors=0
+   426.4s  [1790205 ms] state=RESTING infer=1638 us
+   427.4s  [1791205 ms] state=RESTING infer=1638 us
+   428.4s  [1792205 ms] state=RESTING infer=1638 us
+   428.4s  [1792209 ms] REMINDER: drink water!
+   429.4s  [1793205 ms] state=RESTING infer=1638 us
+   430.4s  [1794205 ms] state=RESTING infer=1638 us
+   431.4s  [1795205 ms] state=RESTING infer=1638 us
+   432.3s  [1796205 ms] state=RESTING infer=1638 us
+   433.3s  [1797205 ms] state=RESTING infer=1638 us
+   434.3s  [1798205 ms] state=RESTING infer=1638 us
+   435.3s  [1799205 ms] state=RESTING infer=1638 us
+   436.1s  RTC 2026-10-20 19:23:11 (LSE)
+   436.1s  [1800007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   436.1s  queue drops=0 imu_errors=0
+   436.3s  [1800205 ms] state=RESTING infer=1638 us
+   437.3s  [1801205 ms] state=RESTING infer=1638 us
+   437.3s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   438.3s  [1802205 ms] state=RESTING infer=1638 us
+   438.3s  [1802209 ms] REMINDER: drink water!
+   439.3s  [1803205 ms] state=RESTING infer=1638 us
+   440.3s  [1804205 ms] state=RESTING infer=1638 us
+   441.3s  [1805205 ms] state=RESTING infer=1638 us
+   442.3s  [1806205 ms] state=RESTING infer=1638 us
+   443.3s  [1807205 ms] state=RESTING infer=1638 us
+   444.3s  [1808205 ms] state=RESTING infer=1638 us
+   445.3s  [1809205 ms] state=RESTING infer=1638 us
+   446.1s  RTC 2026-10-20 19:23:21 (LSE)
+   446.1s  [1810007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   446.1s  queue drops=0 imu_errors=0
+   446.3s  [1810205 ms] state=RESTING infer=1638 us
+   447.3s  [1811205 ms] state=RESTING infer=1638 us
+   448.3s  [1812205 ms] state=RESTING infer=1638 us
+   448.3s  [1812209 ms] REMINDER: drink water!
+   449.2s  [1813205 ms] state=RESTING infer=1638 us
+   450.2s  [1814205 ms] state=RESTING infer=1638 us
+   451.2s  [1815205 ms] state=RESTING infer=1638 us
+   452.2s  [1816205 ms] state=RESTING infer=1638 us
+   453.2s  [1817205 ms] state=RESTING infer=1638 us
+   454.2s  [1818205 ms] state=RESTING infer=1638 us
+   455.2s  [1819205 ms] state=RESTING infer=1638 us
+   456.0s  RTC 2026-10-20 19:23:31 (LSE)
+   456.0s  [1820007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   456.0s  queue drops=0 imu_errors=0
+   456.2s  [1820205 ms] state=RESTING infer=1638 us
+   457.2s  [1821205 ms] state=RESTING infer=1638 us
+   458.2s  [1822205 ms] state=RESTING infer=1638 us
+   458.2s  [1822209 ms] REMINDER: drink water!
+   459.2s  [1823205 ms] state=RESTING infer=1638 us
+   460.2s  [1824205 ms] state=RESTING infer=1638 us
+   461.2s  [1825205 ms] state=RESTING infer=1638 us
+   462.2s  [1826205 ms] state=RESTING infer=1638 us
+   463.2s  [1827205 ms] state=RESTING infer=1638 us
+   464.2s  [1828205 ms] state=RESTING infer=1638 us
+   465.2s  [1829205 ms] state=RESTING infer=1638 us
+   465.9s  RTC 2026-10-20 19:23:41 (LSE)
+   466.0s  [1830007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   466.0s  queue drops=0 imu_errors=0
+   466.1s  [1830205 ms] state=RESTING infer=1638 us
+   467.1s  [1831205 ms] state=RESTING infer=1638 us
+   468.1s  [1832205 ms] state=RESTING infer=1638 us
+   468.1s  [1832209 ms] REMINDER: drink water!
+   469.1s  [1833205 ms] state=RESTING infer=1638 us
+   470.1s  [1834205 ms] state=RESTING infer=1638 us
+   471.1s  [1835205 ms] state=RESTING infer=1638 us
+   472.1s  [1836205 ms] state=RESTING infer=1638 us
+   473.1s  [1837205 ms] state=RESTING infer=1638 us
+   474.1s  [1838205 ms] state=RESTING infer=1638 us
+   475.1s  [1839205 ms] state=RESTING infer=1638 us
+   475.9s  RTC 2026-10-20 19:23:51 (LSE)
+   475.9s  [1840007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   475.9s  queue drops=0 imu_errors=0
+   476.1s  [1840205 ms] state=RESTING infer=1638 us
+   477.1s  [1841205 ms] state=RESTING infer=1638 us
+   478.1s  [1842205 ms] state=RESTING infer=1638 us
+   478.1s  [1842209 ms] REMINDER: drink water!
+   479.1s  [1843205 ms] state=RESTING infer=1638 us
+   480.1s  [1844205 ms] state=RESTING infer=1638 us
+   481.1s  [1845205 ms] state=RESTING infer=1638 us
+   482.1s  [1846205 ms] state=RESTING infer=1638 us
+   483.1s  [1847205 ms] state=RESTING infer=1638 us
+   484.0s  [1848205 ms] state=RESTING infer=1638 us
+   485.0s  [1849205 ms] state=RESTING infer=1638 us
+   485.8s  RTC 2026-10-20 19:24:01 (LSE)
+   485.8s  [1850007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   485.9s  queue drops=0 imu_errors=0
+   486.0s  [1850205 ms] state=RESTING infer=1638 us
+   487.0s  [1851205 ms] state=RESTING infer=1638 us
+   487.0s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   488.0s  [1852205 ms] state=RESTING infer=1638 us
+   488.0s  [1852209 ms] REMINDER: drink water!
+   489.0s  [1853205 ms] state=RESTING infer=1638 us
+   490.0s  [1854205 ms] state=RESTING infer=1638 us
+   491.0s  [1855205 ms] state=RESTING infer=1638 us
+   492.0s  [1856205 ms] state=RESTING infer=1638 us
+   493.0s  [1857205 ms] state=RESTING infer=1638 us
+   494.0s  [1858205 ms] state=RESTING infer=1638 us
+   495.0s  [1859205 ms] state=RESTING infer=1638 us
+   495.8s  RTC 2026-10-20 19:24:11 (LSE)
+   495.8s  [1860007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   495.8s  queue drops=0 imu_errors=0
+   496.0s  [1860205 ms] state=RESTING infer=1638 us
+   497.0s  [1861205 ms] state=RESTING infer=1638 us
+   498.0s  [1862205 ms] state=RESTING infer=1638 us
+   498.0s  [1862209 ms] REMINDER: drink water!
+   499.0s  [1863205 ms] state=RESTING infer=1638 us
+   500.0s  [1864205 ms] state=RESTING infer=1638 us
+   501.0s  [1865205 ms] state=RESTING infer=1638 us
+   502.0s  [1866205 ms] state=RESTING infer=1638 us
+   502.9s  [1867205 ms] state=RESTING infer=1638 us
+   503.9s  [1868205 ms] state=RESTING infer=1638 us
+   504.9s  [1869205 ms] state=RESTING infer=1638 us
+   505.7s  RTC 2026-10-20 19:24:21 (LSE)
+   505.7s  [1870007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   505.8s  queue drops=0 imu_errors=0
+   505.9s  [1870205 ms] state=RESTING infer=1638 us
+   506.9s  [1871205 ms] state=RESTING infer=1638 us
+   507.9s  [1872205 ms] state=RESTING infer=1638 us
+   507.9s  [1872209 ms] REMINDER: drink water!
+   508.9s  [1873205 ms] state=RESTING infer=1638 us
+   509.9s  [1874205 ms] state=RESTING infer=1638 us
+   510.9s  [1875205 ms] state=RESTING infer=1638 us
+   511.9s  [1876205 ms] state=RESTING infer=1638 us
+   512.9s  [1877205 ms] state=RESTING infer=1638 us
+   513.9s  [1878205 ms] state=RESTING infer=1638 us
+   514.9s  [1879205 ms] state=RESTING infer=1638 us
+   515.7s  RTC 2026-10-20 19:24:31 (LSE)
+   515.7s  [1880007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   515.7s  queue drops=0 imu_errors=0
+   515.9s  [1880205 ms] state=RESTING infer=1638 us
+   516.9s  [1881205 ms] state=RESTING infer=1638 us
+   517.9s  [1882205 ms] state=RESTING infer=1638 us
+   517.9s  [1882209 ms] REMINDER: drink water!
+   518.9s  [1883205 ms] state=RESTING infer=1638 us
+   519.9s  [1884205 ms] state=RESTING infer=1638 us
+   520.8s  [1885205 ms] state=RESTING infer=1638 us
+   521.8s  [1886205 ms] state=RESTING infer=1638 us
+   522.8s  [1887205 ms] state=RESTING infer=1638 us
+   523.8s  [1888205 ms] state=RESTING infer=1638 us
+   524.8s  [1889205 ms] state=RESTING infer=1638 us
+   525.6s  RTC 2026-10-20 19:24:41 (LSE)
+   525.6s  [1890007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   525.6s  queue drops=0 imu_errors=0
+   525.8s  [1890205 ms] state=RESTING infer=1638 us
+   526.8s  [1891205 ms] state=RESTING infer=1638 us
+   527.8s  [1892205 ms] state=RESTING infer=1638 us
+   527.8s  [1892209 ms] REMINDER: drink water!
+   528.8s  [1893205 ms] state=RESTING infer=1638 us
+   529.8s  [1894205 ms] state=RESTING infer=1638 us
+   530.8s  [1895205 ms] state=RESTING infer=1638 us
+   531.8s  [1896205 ms] state=RESTING infer=1638 us
+   532.8s  [1897205 ms] state=RESTING infer=1638 us
+   533.8s  [1898205 ms] state=RESTING infer=1638 us
+   534.8s  [1899205 ms] state=RESTING infer=1638 us
+   535.6s  RTC 2026-10-20 19:24:51 (LSE)
+   535.6s  [1900007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   535.6s  queue drops=0 imu_errors=0
+   535.8s  [1900205 ms] state=RESTING infer=1638 us
+   536.8s  [1901205 ms] state=RESTING infer=1638 us
+   536.8s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   537.8s  [1902205 ms] state=RESTING infer=1638 us
+   537.8s  [1902209 ms] REMINDER: drink water!
+   538.8s  [1903205 ms] state=RESTING infer=1638 us
+   539.8s  [1904205 ms] state=RESTING infer=1638 us
+   540.7s  [1905205 ms] state=RESTING infer=1638 us
+   541.7s  [1906205 ms] state=RESTING infer=1638 us
+   542.7s  [1907205 ms] state=RESTING infer=1638 us
+   543.7s  [1908205 ms] state=RESTING infer=1638 us
+   544.7s  [1909205 ms] state=RESTING infer=1638 us
+   545.5s  RTC 2026-10-20 19:25:01 (LSE)
+   545.5s  [1910007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   545.5s  queue drops=0 imu_errors=0
+   545.7s  [1910205 ms] state=RESTING infer=1638 us
+   546.7s  [1911205 ms] state=RESTING infer=1638 us
+   547.7s  [1912205 ms] state=RESTING infer=1638 us
+   547.7s  [1912209 ms] REMINDER: drink water!
+   548.7s  [1913205 ms] state=RESTING infer=1638 us
+   549.7s  [1914205 ms] state=RESTING infer=1638 us
+   550.7s  [1915205 ms] state=RESTING infer=1638 us
+   551.7s  [1916205 ms] state=RESTING infer=1638 us
+   552.7s  [1917205 ms] state=RESTING infer=1638 us
+   553.7s  [1918205 ms] state=RESTING infer=1638 us
+   554.7s  [1919205 ms] state=RESTING infer=1638 us
+   555.5s  RTC 2026-10-20 19:25:11 (LSE)
+   555.5s  [1920007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   555.5s  queue drops=0 imu_errors=0
+   555.7s  [1920205 ms] state=RESTING infer=1638 us
+   556.7s  [1921205 ms] state=RESTING infer=1638 us
+   557.7s  [1922205 ms] state=RESTING infer=1638 us
+   557.7s  [1922209 ms] REMINDER: drink water!
+   558.7s  [1923205 ms] state=RESTING infer=1638 us
+   559.6s  [1924205 ms] state=RESTING infer=1638 us
+   560.6s  [1925205 ms] state=RESTING infer=1638 us
+   561.6s  [1926205 ms] state=RESTING infer=1638 us
+   562.6s  [1927205 ms] state=RESTING infer=1638 us
+   563.6s  [1928205 ms] state=RESTING infer=1638 us
+   564.6s  [1929205 ms] state=RESTING infer=1638 us
+   565.4s  RTC 2026-10-20 19:25:21 (LSE)
+   565.4s  [1930007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   565.4s  queue drops=0 imu_errors=0
+   565.6s  [1930205 ms] state=RESTING infer=1638 us
+   566.6s  [1931205 ms] state=RESTING infer=1638 us
+   567.6s  [1932205 ms] state=RESTING infer=1638 us
+   567.6s  [1932209 ms] REMINDER: drink water!
+   568.6s  [1933205 ms] state=RESTING infer=1638 us
+   569.6s  [1934205 ms] state=RESTING infer=1638 us
+   570.6s  [1935205 ms] state=RESTING infer=1638 us
+   571.6s  [1936205 ms] state=RESTING infer=1638 us
+   572.6s  [1937205 ms] state=RESTING infer=1638 us
+   573.6s  [1938205 ms] state=RESTING infer=1638 us
+   574.6s  [1939205 ms] state=RESTING infer=1638 us
+   575.4s  RTC 2026-10-20 19:25:31 (LSE)
+   575.4s  [1940007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   575.4s  queue drops=0 imu_errors=0
+   575.6s  [1940205 ms] state=RESTING infer=1638 us
+   576.6s  [1941205 ms] state=RESTING infer=1638 us
+   577.6s  [1942205 ms] state=RESTING infer=1638 us
+   577.6s  [1942209 ms] REMINDER: drink water!
+   578.5s  [1943205 ms] state=RESTING infer=1638 us
+   579.5s  [1944205 ms] state=RESTING infer=1638 us
+   580.5s  [1945205 ms] state=RESTING infer=1638 us
+   581.5s  [1946205 ms] state=RESTING infer=1638 us
+   582.5s  [1947205 ms] state=RESTING infer=1638 us
+   583.5s  [1948205 ms] state=RESTING infer=1638 us
+   584.5s  [1949205 ms] state=RESTING infer=1638 us
+   585.3s  RTC 2026-10-20 19:25:41 (LSE)
+   585.3s  [1950007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   585.3s  queue drops=0 imu_errors=0
+   585.5s  [1950205 ms] state=RESTING infer=1638 us
+   586.5s  [1951205 ms] state=RESTING infer=1638 us
+   586.5s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   587.5s  [1952205 ms] state=RESTING infer=1638 us
+   587.5s  [1952209 ms] REMINDER: drink water!
+   588.5s  [1953205 ms] state=RESTING infer=1638 us
+   589.5s  [1954205 ms] state=RESTING infer=1638 us
+   590.5s  [1955205 ms] state=RESTING infer=1638 us
+   591.5s  [1956205 ms] state=RESTING infer=1638 us
+   592.5s  [1957205 ms] state=RESTING infer=1638 us
+   593.5s  [1958205 ms] state=RESTING infer=1638 us
+   594.5s  [1959205 ms] state=RESTING infer=1638 us
+   595.3s  RTC 2026-10-20 19:25:51 (LSE)
+   595.3s  [1960007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   595.3s  queue drops=0 imu_errors=0
+   595.5s  [1960205 ms] state=RESTING infer=1638 us
+   596.5s  [1961205 ms] state=RESTING infer=1638 us
+   597.5s  [1962205 ms] state=RESTING infer=1638 us
+   597.5s  [1962209 ms] REMINDER: drink water!
+   598.4s  [1963205 ms] state=RESTING infer=1638 us
+   599.4s  [1964205 ms] state=RESTING infer=1638 us
+   600.4s  [1965205 ms] state=RESTING infer=1638 us
+   601.4s  [1966205 ms] state=RESTING infer=1638 us
+   602.4s  [1967205 ms] state=RESTING infer=1638 us
+   603.4s  [1968205 ms] state=RESTING infer=1638 us
+   604.4s  [1969205 ms] state=RESTING infer=1638 us
+   605.2s  RTC 2026-10-20 19:26:01 (LSE)
+   605.2s  [1970007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   605.2s  queue drops=0 imu_errors=0
+   605.4s  [1970205 ms] state=RESTING infer=1638 us
+   606.4s  [1971205 ms] state=DRINKING infer=1639 us
+   607.4s  [1972205 ms] state=DRINKING infer=1639 us
+   608.4s  [1973205 ms] state=DRINKING infer=1639 us
+   609.4s  [1974205 ms] state=DRINKING infer=1639 us
+   610.4s  [1975205 ms] state=DRINKING infer=1639 us
+   611.4s  [1976205 ms] state=DRINKING infer=1640 us
+   612.4s  [1977205 ms] state=RESTING infer=1638 us
+   613.4s  [1978205 ms] state=RESTING infer=1638 us
+   614.4s  [1979205 ms] state=RESTING infer=1638 us
+   615.2s  RTC 2026-10-20 19:26:11 (LSE)
+   615.2s  [1980007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   615.2s  queue drops=0 imu_errors=0
+   615.4s  [1980205 ms] state=RESTING infer=1638 us
+   616.4s  [1981205 ms] state=RESTING infer=1638 us
+   617.3s  [1982205 ms] state=RESTING infer=1638 us
+   618.3s  [1983205 ms] state=RESTING infer=1638 us
+   619.3s  [1984205 ms] state=RESTING infer=1638 us
+   620.3s  [1985205 ms] state=RESTING infer=1638 us
+   621.3s  [1986205 ms] state=RESTING infer=1638 us
+   622.3s  [1987205 ms] state=RESTING infer=1638 us
+   623.3s  [1988205 ms] state=RESTING infer=1638 us
+   624.3s  [1989205 ms] state=RESTING infer=1638 us
+   625.1s  RTC 2026-10-20 19:26:20 (LSE)
+   625.1s  [1990007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   625.1s  queue drops=0 imu_errors=0
+   625.3s  [1990205 ms] state=RESTING infer=1638 us
+   626.3s  [1991205 ms] state=RESTING infer=1638 us
+   627.3s  [1992205 ms] state=RESTING infer=1638 us
+   628.3s  [1993205 ms] state=RESTING infer=1638 us
+   629.3s  [1994205 ms] state=RESTING infer=1638 us
+   630.3s  [1995205 ms] state=RESTING infer=1638 us
+   631.3s  [1996205 ms] state=RESTING infer=1638 us
+   632.3s  [1997205 ms] state=RESTING infer=1638 us
+   633.3s  [1998205 ms] state=RESTING infer=1638 us
+   634.3s  [1999205 ms] state=RESTING infer=1638 us
+   635.1s  RTC 2026-10-20 19:26:30 (LSE)
+   635.1s  [2000007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   635.1s  queue drops=0 imu_errors=0
+   635.3s  [2000205 ms] state=RESTING infer=1638 us
+   636.2s  [2001205 ms] state=RESTING infer=1638 us
+   636.3s  INFER TIMING (50 runs): median=1638 us p95=1639 us max=1640 us
+   637.2s  [2002205 ms] state=RESTING infer=1638 us
+   638.2s  [2003205 ms] state=RESTING infer=1638 us
+   639.2s  [2004205 ms] state=RESTING infer=1638 us
+   640.2s  [2005205 ms] state=RESTING infer=1638 us
+   641.2s  [2006205 ms] state=RESTING infer=1638 us
+   641.2s  [2006209 ms] REMINDER: drink water!
+   642.2s  [2007205 ms] state=RESTING infer=1638 us
+   643.2s  [2008205 ms] state=RESTING infer=1638 us
+   644.2s  [2009205 ms] state=RESTING infer=1638 us
+   645.0s  RTC 2026-10-20 19:26:40 (LSE)
+   645.0s  [2010007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   645.0s  queue drops=0 imu_errors=0
+   645.2s  [2010205 ms] state=DRINKING infer=1640 us
+   646.2s  [2011205 ms] state=DRINKING infer=1640 us
+   647.2s  [2012205 ms] state=RESTING infer=1638 us
+   648.2s  [2013205 ms] state=RESTING infer=1638 us
+   649.2s  [2014205 ms] state=RESTING infer=1638 us
+   650.2s  [2015205 ms] state=RESTING infer=1638 us
+   651.2s  [2016205 ms] state=RESTING infer=1638 us
+   652.2s  [2017205 ms] state=RESTING infer=1638 us
+   653.2s  [2018205 ms] state=RESTING infer=1638 us
+   654.2s  [2019205 ms] state=RESTING infer=1638 us
+   655.0s  RTC 2026-10-20 19:26:50 (LSE)
+   655.0s  [2020007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   655.0s  queue drops=0 imu_errors=0
+   655.2s  [2020205 ms] state=RESTING infer=1638 us
+   656.2s  [2021205 ms] state=RESTING infer=1638 us
+   657.1s  [2022205 ms] state=RESTING infer=1638 us
+   658.1s  [2023205 ms] state=RESTING infer=1638 us
+   659.1s  [2024205 ms] state=RESTING infer=1638 us
+   660.1s  [2025205 ms] state=RESTING infer=1638 us
+   661.1s  [2026205 ms] state=RESTING infer=1638 us
+   662.1s  [2027205 ms] state=RESTING infer=1638 us
+   663.1s  [2028205 ms] state=RESTING infer=1638 us
+   664.1s  [2029205 ms] state=RESTING infer=1638 us
+   664.9s  RTC 2026-10-20 19:27:00 (LSE)
+   664.9s  [2030007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   664.9s  queue drops=0 imu_errors=0
+   665.1s  [2030205 ms] state=RESTING infer=1638 us
+   666.1s  [2031205 ms] state=RESTING infer=1638 us
+   667.1s  [2032205 ms] state=RESTING infer=1638 us
+   668.1s  [2033205 ms] state=RESTING infer=1638 us
+   669.1s  [2034205 ms] state=RESTING infer=1638 us
+   670.1s  [2035205 ms] state=RESTING infer=1638 us
+   671.1s  [2036205 ms] state=RESTING infer=1638 us
+   672.1s  [2037205 ms] state=RESTING infer=1638 us
+   673.1s  [2038205 ms] state=RESTING infer=1638 us
+   674.1s  [2039205 ms] state=RESTING infer=1638 us
+   674.8s  RTC 2026-10-20 19:27:10 (LSE)
+   674.9s  [2040007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   674.9s  queue drops=0 imu_errors=0
+   675.0s  [2040205 ms] state=RESTING infer=1638 us
+   676.0s  [2041205 ms] state=RESTING infer=1638 us
+   676.0s  [2041209 ms] REMINDER: drink water!
+   677.0s  [2042205 ms] state=RESTING infer=1638 us
+   678.0s  [2043205 ms] state=RESTING infer=1638 us
+   679.0s  [2044205 ms] state=RESTING infer=1638 us
+   680.0s  [2045205 ms] state=RESTING infer=1638 us
+   681.0s  [2046205 ms] state=RESTING infer=1638 us
+   682.0s  [2047205 ms] state=RESTING infer=1638 us
+   683.0s  [2048205 ms] state=RESTING infer=1638 us
+   684.0s  [2049205 ms] state=RESTING infer=1638 us
+   684.8s  RTC 2026-10-20 19:27:20 (LSE)
+   684.8s  [2050007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   684.8s  queue drops=0 imu_errors=0
+   685.0s  [2050205 ms] state=RESTING infer=1638 us
+   686.0s  [2051205 ms] state=RESTING infer=1638 us
+   686.0s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1640 us
+   686.0s  [2051215 ms] REMINDER: drink water!
+   687.0s  [2052205 ms] state=RESTING infer=1638 us
+   688.0s  [2053205 ms] state=RESTING infer=1638 us
+   689.0s  [2054205 ms] state=RESTING infer=1638 us
+   690.0s  [2055205 ms] state=RESTING infer=1638 us
+   691.0s  [2056205 ms] state=RESTING infer=1638 us
+   692.0s  [2057205 ms] state=RESTING infer=1638 us
+   693.0s  [2058205 ms] state=RESTING infer=1638 us
+   693.9s  [2059205 ms] state=RESTING infer=1638 us
+   694.7s  RTC 2026-10-20 19:27:30 (LSE)
+   694.8s  [2060007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   694.8s  queue drops=0 imu_errors=0
+   694.9s  [2060205 ms] state=RESTING infer=1638 us
+   695.9s  [2061205 ms] state=RESTING infer=1638 us
+   696.9s  [2062205 ms] state=RESTING infer=1638 us
+   696.9s  [2062209 ms] REMINDER: drink water!
+   697.9s  [2063205 ms] state=RESTING infer=1638 us
+   698.9s  [2064205 ms] state=RESTING infer=1638 us
+   699.9s  [2065205 ms] state=RESTING infer=1638 us
+   700.9s  [2066205 ms] state=RESTING infer=1638 us
+   701.9s  [2067205 ms] state=RESTING infer=1638 us
+   702.9s  [2068205 ms] state=RESTING infer=1638 us
+   703.9s  [2069205 ms] state=RESTING infer=1638 us
+   704.7s  RTC 2026-10-20 19:27:40 (LSE)
+   704.7s  [2070007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   704.7s  queue drops=0 imu_errors=0
+   704.9s  [2070205 ms] state=RESTING infer=1638 us
+   705.9s  [2071205 ms] state=RESTING infer=1638 us
+   706.9s  [2072205 ms] state=RESTING infer=1638 us
+   706.9s  [2072209 ms] REMINDER: drink water!
+   707.9s  [2073205 ms] state=RESTING infer=1638 us
+   708.9s  [2074205 ms] state=RESTING infer=1638 us
+   709.9s  [2075205 ms] state=RESTING infer=1638 us
+   710.9s  [2076205 ms] state=RESTING infer=1638 us
+   711.9s  [2077205 ms] state=RESTING infer=1638 us
+   712.8s  [2078205 ms] state=RESTING infer=1638 us
+   713.8s  [2079205 ms] state=RESTING infer=1638 us
+   714.6s  RTC 2026-10-20 19:27:50 (LSE)
+   714.6s  [2080007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   714.7s  queue drops=0 imu_errors=0
+   714.8s  [2080205 ms] state=RESTING infer=1638 us
+   715.8s  [2081205 ms] state=RESTING infer=1638 us
+   716.8s  [2082205 ms] state=RESTING infer=1638 us
+   716.8s  [2082209 ms] REMINDER: drink water!
+   717.8s  [2083205 ms] state=RESTING infer=1638 us
+   718.8s  [2084205 ms] state=RESTING infer=1638 us
+   719.8s  [2085205 ms] state=RESTING infer=1638 us
+   720.8s  [2086205 ms] state=RESTING infer=1638 us
+   721.8s  [2087205 ms] state=RESTING infer=1638 us
+   722.8s  [2088205 ms] state=RESTING infer=1638 us
+   723.8s  [2089205 ms] state=RESTING infer=1638 us
+   724.6s  RTC 2026-10-20 19:28:00 (LSE)
+   724.6s  [2090007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   724.6s  queue drops=0 imu_errors=0
+   724.8s  [2090205 ms] state=RESTING infer=1638 us
+   725.8s  [2091205 ms] state=RESTING infer=1638 us
+   726.8s  [2092205 ms] state=RESTING infer=1638 us
+   726.8s  [2092209 ms] REMINDER: drink water!
+   727.8s  [2093205 ms] state=RESTING infer=1638 us
+   728.8s  [2094205 ms] state=RESTING infer=1638 us
+   729.8s  [2095205 ms] state=RESTING infer=1638 us
+   730.7s  [2096205 ms] state=RESTING infer=1638 us
+   731.7s  [2097205 ms] state=RESTING infer=1638 us
+   732.7s  [2098205 ms] state=RESTING infer=1638 us
+   733.7s  [2099205 ms] state=RESTING infer=1638 us
+   734.5s  RTC 2026-10-20 19:28:10 (LSE)
+   734.5s  [2100007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   734.5s  queue drops=0 imu_errors=0
+   734.7s  [2100205 ms] state=RESTING infer=1638 us
+   735.7s  [2101205 ms] state=RESTING infer=1638 us
+   735.7s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   736.7s  [2102205 ms] state=RESTING infer=1638 us
+   736.7s  [2102209 ms] REMINDER: drink water!
+   737.7s  [2103205 ms] state=RESTING infer=1638 us
+   738.7s  [2104205 ms] state=RESTING infer=1638 us
+   739.7s  [2105205 ms] state=RESTING infer=1638 us
+   740.7s  [2106205 ms] state=RESTING infer=1638 us
+   741.7s  [2107205 ms] state=RESTING infer=1638 us
+   742.7s  [2108205 ms] state=RESTING infer=1638 us
+   743.7s  [2109205 ms] state=RESTING infer=1638 us
+   744.5s  RTC 2026-10-20 19:28:20 (LSE)
+   744.5s  [2110007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   744.5s  queue drops=0 imu_errors=0
+   744.7s  [2110205 ms] state=RESTING infer=1638 us
+   745.7s  [2111205 ms] state=RESTING infer=1638 us
+   746.7s  [2112205 ms] state=RESTING infer=1638 us
+   746.7s  [2112209 ms] REMINDER: drink water!
+   747.6s  [2113205 ms] state=RESTING infer=1638 us
+   748.6s  [2114205 ms] state=RESTING infer=1638 us
+   749.6s  [2115205 ms] state=RESTING infer=1638 us
+   750.6s  [2116205 ms] state=RESTING infer=1638 us
+   751.6s  [2117205 ms] state=RESTING infer=1638 us
+   752.6s  [2118205 ms] state=RESTING infer=1638 us
+   753.6s  [2119205 ms] state=RESTING infer=1638 us
+   754.4s  RTC 2026-10-20 19:28:30 (LSE)
+   754.4s  [2120007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   754.4s  queue drops=0 imu_errors=0
+   754.6s  [2120205 ms] state=RESTING infer=1638 us
+   755.6s  [2121205 ms] state=RESTING infer=1638 us
+   756.6s  [2122205 ms] state=RESTING infer=1638 us
+   756.6s  [2122209 ms] REMINDER: drink water!
+   757.6s  [2123205 ms] state=RESTING infer=1638 us
+   758.6s  [2124205 ms] state=RESTING infer=1638 us
+   759.6s  [2125205 ms] state=RESTING infer=1638 us
+   760.6s  [2126205 ms] state=RESTING infer=1638 us
+   761.6s  [2127205 ms] state=RESTING infer=1638 us
+   762.6s  [2128205 ms] state=RESTING infer=1638 us
+   763.6s  [2129205 ms] state=RESTING infer=1638 us
+   764.4s  RTC 2026-10-20 19:28:40 (LSE)
+   764.4s  [2130007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   764.4s  queue drops=0 imu_errors=0
+   764.6s  [2130205 ms] state=RESTING infer=1638 us
+   765.5s  [2131205 ms] state=RESTING infer=1638 us
+   766.5s  [2132205 ms] state=RESTING infer=1638 us
+   766.5s  [2132209 ms] REMINDER: drink water!
+   767.5s  [2133205 ms] state=RESTING infer=1638 us
+   768.5s  [2134205 ms] state=RESTING infer=1638 us
+   769.5s  [2135205 ms] state=RESTING infer=1638 us
+   770.5s  [2136205 ms] state=RESTING infer=1638 us
+   771.5s  [2137205 ms] state=RESTING infer=1638 us
+   772.5s  [2138205 ms] state=RESTING infer=1638 us
+   773.5s  [2139205 ms] state=RESTING infer=1638 us
+   774.3s  RTC 2026-10-20 19:28:50 (LSE)
+   774.3s  [2140007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   774.3s  queue drops=0 imu_errors=0
+   774.5s  [2140205 ms] state=RESTING infer=1638 us
+   775.5s  [2141205 ms] state=RESTING infer=1638 us
+   776.5s  [2142205 ms] state=RESTING infer=1638 us
+   776.5s  [2142209 ms] REMINDER: drink water!
+   777.5s  [2143205 ms] state=RESTING infer=1638 us
+   778.5s  [2144205 ms] state=RESTING infer=1638 us
+   779.5s  [2145205 ms] state=RESTING infer=1638 us
+   780.5s  [2146205 ms] state=RESTING infer=1638 us
+   781.5s  [2147205 ms] state=RESTING infer=1638 us
+   782.5s  [2148205 ms] state=RESTING infer=1638 us
+   783.4s  [2149205 ms] state=RESTING infer=1638 us
+   784.2s  RTC 2026-10-20 19:29:00 (LSE)
+   784.3s  [2150007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   784.3s  queue drops=0 imu_errors=0
+   784.4s  [2150205 ms] state=RESTING infer=1638 us
+   785.4s  [2151205 ms] state=RESTING infer=1638 us
+   785.4s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   786.4s  [2152205 ms] state=RESTING infer=1638 us
+   786.4s  [2152209 ms] REMINDER: drink water!
+   787.4s  [2153205 ms] state=RESTING infer=1638 us
+   788.4s  [2154205 ms] state=RESTING infer=1638 us
+   789.4s  [2155205 ms] state=RESTING infer=1638 us
+   790.4s  [2156205 ms] state=RESTING infer=1638 us
+   791.4s  [2157205 ms] state=RESTING infer=1638 us
+   792.4s  [2158205 ms] state=RESTING infer=1638 us
+   793.4s  [2159205 ms] state=RESTING infer=1638 us
+   794.2s  RTC 2026-10-20 19:29:10 (LSE)
+   794.2s  [2160007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   794.2s  queue drops=0 imu_errors=0
+   794.4s  [2160205 ms] state=RESTING infer=1638 us
+   795.4s  [2161205 ms] state=RESTING infer=1638 us
+   796.4s  [2162205 ms] state=RESTING infer=1638 us
+   796.4s  [2162209 ms] REMINDER: drink water!
+   797.4s  [2163205 ms] state=RESTING infer=1638 us
+   798.4s  [2164205 ms] state=RESTING infer=1638 us
+   799.4s  [2165205 ms] state=RESTING infer=1638 us
+   800.4s  [2166205 ms] state=RESTING infer=1638 us
+   801.3s  [2167205 ms] state=RESTING infer=1638 us
+   802.3s  [2168205 ms] state=RESTING infer=1638 us
+   803.3s  [2169205 ms] state=RESTING infer=1638 us
+   804.1s  RTC 2026-10-20 19:29:20 (LSE)
+   804.1s  [2170007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   804.1s  queue drops=0 imu_errors=0
+   804.3s  [2170205 ms] state=RESTING infer=1638 us
+   805.3s  [2171205 ms] state=RESTING infer=1638 us
+   806.3s  [2172205 ms] state=RESTING infer=1638 us
+   806.3s  [2172209 ms] REMINDER: drink water!
+   807.3s  [2173205 ms] state=RESTING infer=1638 us
+   808.3s  [2174205 ms] state=RESTING infer=1638 us
+   809.3s  [2175205 ms] state=RESTING infer=1638 us
+   810.3s  [2176205 ms] state=RESTING infer=1638 us
+   811.3s  [2177205 ms] state=RESTING infer=1638 us
+   812.3s  [2178205 ms] state=RESTING infer=1638 us
+   813.3s  [2179205 ms] state=RESTING infer=1638 us
+   814.1s  RTC 2026-10-20 19:29:29 (LSE)
+   814.1s  [2180007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   814.1s  queue drops=0 imu_errors=0
+   814.3s  [2180205 ms] state=RESTING infer=1638 us
+   815.3s  [2181205 ms] state=RESTING infer=1638 us
+   816.3s  [2182205 ms] state=RESTING infer=1638 us
+   816.3s  [2182209 ms] REMINDER: drink water!
+   817.3s  [2183205 ms] state=RESTING infer=1638 us
+   818.2s  [2184205 ms] state=RESTING infer=1638 us
+   819.2s  [2185205 ms] state=RESTING infer=1638 us
+   820.2s  [2186205 ms] state=RESTING infer=1638 us
+   821.2s  [2187205 ms] state=RESTING infer=1638 us
+   822.2s  [2188205 ms] state=RESTING infer=1638 us
+   823.2s  [2189205 ms] state=RESTING infer=1638 us
+   824.0s  RTC 2026-10-20 19:29:39 (LSE)
+   824.0s  [2190007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   824.0s  queue drops=0 imu_errors=0
+   824.2s  [2190205 ms] state=RESTING infer=1638 us
+   825.2s  [2191205 ms] state=RESTING infer=1638 us
+   826.2s  [2192205 ms] state=RESTING infer=1638 us
+   826.2s  [2192209 ms] REMINDER: drink water!
+   827.2s  [2193205 ms] state=RESTING infer=1638 us
+   828.2s  [2194205 ms] state=RESTING infer=1638 us
+   829.2s  [2195205 ms] state=RESTING infer=1638 us
+   830.2s  [2196205 ms] state=RESTING infer=1638 us
+   831.2s  [2197205 ms] state=RESTING infer=1638 us
+   832.2s  [2198205 ms] state=RESTING infer=1638 us
+   833.2s  [2199205 ms] state=RESTING infer=1638 us
+   834.0s  RTC 2026-10-20 19:29:49 (LSE)
+   834.0s  [2200007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   834.0s  queue drops=0 imu_errors=0
+   834.2s  [2200205 ms] state=RESTING infer=1638 us
+   835.2s  [2201205 ms] state=RESTING infer=1638 us
+   835.2s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   836.2s  [2202205 ms] state=RESTING infer=1638 us
+   836.2s  [2202209 ms] REMINDER: drink water!
+   837.1s  [2203205 ms] state=RESTING infer=1638 us
+   838.1s  [2204205 ms] state=RESTING infer=1638 us
+   839.1s  [2205205 ms] state=RESTING infer=1638 us
+   840.1s  [2206205 ms] state=RESTING infer=1638 us
+   841.1s  [2207205 ms] state=RESTING infer=1638 us
+   842.1s  [2208205 ms] state=RESTING infer=1638 us
+   843.1s  [2209205 ms] state=RESTING infer=1638 us
+   843.9s  RTC 2026-10-20 19:29:59 (LSE)
+   843.9s  [2210007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   843.9s  queue drops=0 imu_errors=0
+   844.1s  [2210205 ms] state=RESTING infer=1638 us
+   845.1s  [2211205 ms] state=RESTING infer=1638 us
+   846.1s  [2212205 ms] state=RESTING infer=1638 us
+   846.1s  [2212209 ms] REMINDER: drink water!
+   847.1s  [2213205 ms] state=RESTING infer=1638 us
+   848.1s  [2214205 ms] state=RESTING infer=1638 us
+   849.1s  [2215205 ms] state=RESTING infer=1638 us
+   850.1s  [2216205 ms] state=RESTING infer=1638 us
+   851.1s  [2217205 ms] state=RESTING infer=1638 us
+   852.1s  [2218205 ms] state=RESTING infer=1638 us
+   853.1s  [2219205 ms] state=RESTING infer=1638 us
+   853.9s  RTC 2026-10-20 19:30:09 (LSE)
+   853.9s  [2220007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   853.9s  queue drops=0 imu_errors=0
+   854.1s  [2220205 ms] state=RESTING infer=1638 us
+   855.0s  [2221205 ms] state=RESTING infer=1638 us
+   856.0s  [2222205 ms] state=RESTING infer=1638 us
+   856.0s  [2222209 ms] REMINDER: drink water!
+   857.0s  [2223205 ms] state=RESTING infer=1638 us
+   858.0s  [2224205 ms] state=RESTING infer=1638 us
+   859.0s  [2225205 ms] state=RESTING infer=1638 us
+   860.0s  [2226205 ms] state=RESTING infer=1638 us
+   861.0s  [2227205 ms] state=RESTING infer=1638 us
+   862.0s  [2228205 ms] state=RESTING infer=1638 us
+   863.0s  [2229205 ms] state=RESTING infer=1638 us
+   863.8s  RTC 2026-10-20 19:30:19 (LSE)
+   863.8s  [2230007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   863.8s  queue drops=0 imu_errors=0
+   864.0s  [2230205 ms] state=RESTING infer=1638 us
+   865.0s  [2231205 ms] state=RESTING infer=1638 us
+   866.0s  [2232205 ms] state=RESTING infer=1638 us
+   866.0s  [2232209 ms] REMINDER: drink water!
+   867.0s  [2233205 ms] state=RESTING infer=1638 us
+   868.0s  [2234205 ms] state=RESTING infer=1638 us
+   869.0s  [2235205 ms] state=RESTING infer=1638 us
+   870.0s  [2236205 ms] state=RESTING infer=1638 us
+   871.0s  [2237205 ms] state=RESTING infer=1638 us
+   872.0s  [2238205 ms] state=RESTING infer=1638 us
+   872.9s  [2239205 ms] state=RESTING infer=1638 us
+   873.7s  RTC 2026-10-20 19:30:29 (LSE)
+   873.8s  [2240007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   873.8s  queue drops=0 imu_errors=0
+   873.9s  [2240205 ms] state=RESTING infer=1638 us
+   874.9s  [2241205 ms] state=RESTING infer=1638 us
+   875.9s  [2242205 ms] state=RESTING infer=1638 us
+   875.9s  [2242209 ms] REMINDER: drink water!
+   876.9s  [2243205 ms] state=RESTING infer=1638 us
+   877.9s  [2244205 ms] state=RESTING infer=1638 us
+   878.9s  [2245205 ms] state=RESTING infer=1638 us
+   879.9s  [2246205 ms] state=RESTING infer=1638 us
+   880.9s  [2247205 ms] state=RESTING infer=1638 us
+   881.9s  [2248205 ms] state=RESTING infer=1638 us
+   882.9s  [2249205 ms] state=RESTING infer=1638 us
+   883.7s  RTC 2026-10-20 19:30:39 (LSE)
+   883.7s  [2250007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   883.7s  queue drops=0 imu_errors=0
+   883.9s  [2250205 ms] state=RESTING infer=1638 us
+   884.9s  [2251205 ms] state=RESTING infer=1638 us
+   884.9s  INFER TIMING (50 runs): median=1638 us p95=1638 us max=1638 us
+   885.9s  [2252205 ms] state=RESTING infer=1638 us
+   885.9s  [2252209 ms] REMINDER: drink water!
+   886.9s  [2253205 ms] state=RESTING infer=1638 us
+   887.9s  [2254205 ms] state=RESTING infer=1638 us
+   888.9s  [2255205 ms] state=RESTING infer=1638 us
+   889.8s  [2256205 ms] state=RESTING infer=1638 us
+   890.8s  [2257205 ms] state=RESTING infer=1638 us
+   891.8s  [2258205 ms] state=RESTING infer=1638 us
+   892.8s  [2259205 ms] state=RESTING infer=1638 us
+   893.6s  RTC 2026-10-20 19:30:49 (LSE)
+   893.6s  [2260007 ms] heap=33744 B HWM: led=161 btn=336 sens=340 mon=214 buz=347 lcd=338 inf=270 rem=224
+   893.6s  queue drops=0 imu_errors=0
+   893.8s  [2260205 ms] state=RESTING infer=1638 us
+   894.8s  [2261205 ms] state=RESTING infer=1638 us
+   895.8s  [2262205 ms] state=RESTING infer=1638 us
+   895.8s  [2262209 ms] REMINDER: drink water!
+   896.8s  [2263205 ms] state=RESTING infer=1638 us
+   897.8s  [2264205 ms] state=RESTING infer=1638 us
+   898.8s  [2265205 ms] state=RESTING infer=1638 us
+   899.8s  [2266205 ms] state=RESTING infer=1638 us
+   900.8s  [2267205 ms] state=RESTING infer=1638 us
