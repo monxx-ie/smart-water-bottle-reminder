@@ -301,7 +301,9 @@ static int als_read(uint16_t *als, uint16_t *ps, uint16_t *ir)
     return 0;
 }
 
-/* ---------- Sensor task: IMU + light every 100 ms, AHT every 1 s ---------- */
+/* ---------- Sensor task: IMU + light at 50 Hz, streamed as CSV ----------
+   Line format: D,<ms>,ax,ay,az,gx,gy,gz,ps,als   (raw counts)
+   accel: 8192 LSB/g, gyro: 65.5 LSB/dps.  "E,<ms>" = IMU read failed twice. */
 static void sensor_task(void *arg)
 {
     (void)arg;
@@ -318,68 +320,49 @@ static void sensor_task(void *arg)
     int32_t t100 = 0, h100 = 0;
     uint16_t als = 0, ps = 0, ir = 0;
     int imu_good = 0, aht_good = 0, als_good = 0;
-    int aht_rc = -9;
     uint32_t cycle = 0;
     TickType_t last = xTaskGetTickCount();
 
     for (;;) {
-        if (imu_ok) imu_good = (imu_read(acc, gyr, &traw) == 0);
+        if (imu_ok) {
+            imu_good = (imu_read(acc, gyr, &traw) == 0);
+            if (!imu_good) imu_good = (imu_read(acc, gyr, &traw) == 0);   /* one retry */
+        }
         if (als_ok) als_good = (als_read(&als, &ps, &ir) == 0);
         if (aht_ok) {
-            if (cycle % 10 == 0) {
+            if (cycle % 50 == 0) {
                 aht_trigger();
-            } else if (cycle % 10 == 1) {
-                aht_rc = aht_read(&t100, &h100);
-                aht_good = (aht_rc == 0);
+            } else if (cycle % 50 == 5) {
+                aht_good = (aht_read(&t100, &h100) == 0);
             }
         }
 
-        if (cycle % 10 == 2) {
-            unsigned long now = (unsigned long)xTaskGetTickCount();
-            int ax = 0, ay = 0, az = 0;
-            int32_t t10 = t100 / 10, h10 = h100 / 10;
-            unsigned lux = (unsigned)((uint32_t)als * 36 / 100);
+        unsigned long now = (unsigned long)xTaskGetTickCount();
+        if (imu_good) {
+            log_printf("D,%lu,%d,%d,%d,%d,%d,%d,%u,%u\r\n", now,
+                       acc[0], acc[1], acc[2], gyr[0], gyr[1], gyr[2],
+                       (unsigned)ps, (unsigned)als);
+        } else {
+            log_printf("E,%lu\r\n", now);
+        }
 
-            if (imu_good) {
-                ax = (int)((int32_t)acc[0] * 1000 / 8192);
-                ay = (int)((int32_t)acc[1] * 1000 / 8192);
-                az = (int)((int32_t)acc[2] * 1000 / 8192);
-                int32_t gx = (int32_t)gyr[0] * 100 / 655;
-                int32_t gy = (int32_t)gyr[1] * 100 / 655;
-                int32_t gz = (int32_t)gyr[2] * 100 / 655;
-                int32_t tt = (int32_t)traw * 100 / 3268 + 250;
-                log_printf("[%lu ms] ACC mg: %d %d %d | GYRO dps: %s%d.%d %s%d.%d %s%d.%d | T=%s%d.%dC\r\n",
-                           now, ax, ay, az, F1(gx), F1(gy), F1(gz), F1(tt));
-            } else {
-                log_printf("[%lu ms] IMU read ERROR\r\n", now);
-            }
-
-            if (aht_good) {
-                log_printf("[%lu ms] AHT10: %s%d.%dC %d.%d%%RH\r\n",
-                           now, F1(t10), (int)(h10 / 10), (int)(h10 % 10));
-            } else {
-                log_printf("[%lu ms] AHT10 read ERROR rc=%d init_ok=%d\r\n", now, aht_rc, aht_ok);
-            }
-
-            if (als_good) {
-                log_printf("[%lu ms] AP3216C: ALS=%u (~%u lux) PS=%u IR=%u\r\n",
-                           now, als, lux, ps, ir);
-            } else {
-                log_printf("[%lu ms] AP3216C read ERROR\r\n", now);
-            }
-
+        if (cycle % 25 == 0) {
             xSemaphoreTake(snap_mutex, portMAX_DELAY);
             snap.imu_ok = imu_good;
             snap.aht_ok = aht_good;
             snap.als_ok = als_good;
-            snap.ax = ax; snap.ay = ay; snap.az = az;
-            snap.t10 = t10; snap.h10 = h10;
-            snap.lux = lux; snap.ps = ps;
+            snap.ax = (int)((int32_t)acc[0] * 1000 / 8192);
+            snap.ay = (int)((int32_t)acc[1] * 1000 / 8192);
+            snap.az = (int)((int32_t)acc[2] * 1000 / 8192);
+            snap.t10 = t100 / 10;
+            snap.h10 = h100 / 10;
+            snap.lux = (unsigned)((uint32_t)als * 36 / 100);
+            snap.ps = ps;
             xSemaphoreGive(snap_mutex);
         }
 
         cycle++;
-        vTaskDelayUntil(&last, pdMS_TO_TICKS(100));
+        vTaskDelayUntil(&last, pdMS_TO_TICKS(20));
     }
 }
 
@@ -774,7 +757,7 @@ int main(void)
     uart_mutex = xSemaphoreCreateMutex();
     snap_mutex = xSemaphoreCreateMutex();
 
-    log_printf("\r\nRT-Spark bottle: bring-up with LCD starting\r\n");
+    log_printf("\r\nRT-Spark bottle: data logger starting\r\n");
 
     xTaskCreate(led_task,     "led",     192, NULL, 1, &h_led);
     xTaskCreate(buzzer_task,  "buzzer",  384, NULL, 2, &h_buz);
