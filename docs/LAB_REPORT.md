@@ -1,6 +1,6 @@
 # BCA182 Laboratory Activity No. 4 — Lab Report
 **Project:** Smart Water Bottle Reminder: Edge AI on RT-Spark  
-**Course:** BCA182 Embedded Systems Programming (MSU-IIT College of Computer Studies)
+**Course:** BS Computer Applications Major in Embedded Systems (MSU-IIT College of Computer Studies)
 
 ---
 
