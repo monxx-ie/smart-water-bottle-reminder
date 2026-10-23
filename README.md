@@ -55,7 +55,7 @@ Shared-data protection: two queues (samples, results), a mutex for the UART, a m
 - Split by recording, so windows from one recording never appear in both training and test sets. Training uses sessions 1, 2, 4 and 6 (40 windows per class); testing uses sessions 3 and 5 (20 windows per class).
 - Decision tree, depth 5. **Held-out accuracy 95%** (baseline that always guesses the most common class: 25%).
 
-![Confusion matrix](ml/confusion_matrix.png)
+![Confusion matrix](docs/confusion_matrix.png)
 
 ### Live trials on the board (`tools/trial.py`, `data/trials.csv`)
 80 trials, 20 per state, 6 seconds each. These ran on the earlier 16 MHz build; the model, features and window length are unchanged in the final 168 MHz build.
