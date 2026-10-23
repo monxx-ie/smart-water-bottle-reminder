@@ -26,7 +26,7 @@ Board file: `boards/rtspark.json` (copied from the PlatformIO `black_f407zg` man
 
 ## Water Bottle Reminder Demo
 
-[▶ Watch the Water Bottle Reminder Demo](documentation/water_bottle_reminder_demo.mp4)
+[▶ Watch the Water Bottle Reminder Demo](docs/water_bottle_reminder_demo.mp4)
 
 1. The **sensor task** reads the IMU and light/proximity sensor every 20 ms (50 Hz) and sends samples into a queue.
 2. The **inference task** keeps a 2-second window (100 samples), computes 28 features (mean, standard deviation, min and max of the six IMU axes, accelerometer magnitude statistics, proximity maximum, mean light) and runs a decision tree once per second.
