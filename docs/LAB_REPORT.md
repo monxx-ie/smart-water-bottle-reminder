@@ -111,3 +111,38 @@ The firmware is structured around **8 concurrent FreeRTOS tasks** using preempti
 | **`monitor`** | 1 | 384 | Logs RTC uptime, free heap, and stack high-water marks over `USART1` every 10 seconds. |
 
 **Synchronization & Shared-Data Protection:** Inter-task communication uses **two FreeRTOS queues** (raw samples and inference results), **two mutexes** (one protecting `USART1` serial output and one guarding the shared telemetry snapshot used by the LCD), and a **task notification** to wake the buzzer task.
+
+## 5. Task 2: Results and Evaluation
+
+### 5.1 Data Collection
+Data for the four target states (resting, carried, drinking, and shaken) was gathered using the `collect.py` script. The IMU sampling interval was verified to have a constant mean of 20.0 ms (minimum 19 ms, maximum 21 ms), generating roughly 500 samples every 10 seconds (50 Hz).
+
+### 5.2 Model Training
+A Decision Tree classifier was trained using 40 training windows and 20 test windows per class. The model achieved a 95.0% accuracy on the test set, vastly outperforming the 25.0% baseline. The top three features weighted by the decision tree were `ax_max` (0.333), `mag_std` (0.333), and `ax_mean` (0.287). 
+
+![Training Confusion Matrix](confusion_matrix.png)
+
+The training confusion matrix shows perfect 100% recall for the "resting" and "shaken" states. Minor overlap occurred between similar motions: 3 "carried" windows were misclassified as "drinking", and 1 "drinking" window was misclassified as "carried".
+
+### 5.3 The 80-Trial Test
+During live on-board inference testing, the model was evaluated across 80 physical trials (20 per class) and achieved an overall accuracy of 91.2% (73/80 correct).
+
+| True State | Correct | Misclassified As |
+|---|---|---|
+| Resting | 20/20 | None |
+| Carried | 16/20 | Drinking (4) |
+| Drinking | 20/20 | None |
+| Shaken | 17/20 | Drinking (3) |
+
+The model performs inferences rapidly, with the median execution time logging between 154 µs and 1638 µs across different test batches.
+
+### 5.4 The 15-Minute Continuous Run
+A 15-minute continuous soak test confirmed excellent system stability. Over 901 continuous predictions, the system maintained a consistent 1000 ms maximum gap with zero IMU errors, zero serial queue drops, and zero reboots. The memory remained stable with the lowest free heap recorded at 33,744 B. The system successfully triggered 69 drink reminders during the run.
+
+### 5.5 Resource Utilization
+Overall resource utilization is highly efficient for the board. The final firmware uses only 21,488 B (2.0%) of the available 1 MB Flash memory and 51,660 B (39.4%) of the 128 KB RAM.
+
+---
+
+## 6. Conclusion
+The Smart Water Bottle Reminder successfully demonstrates the feasibility of running Edge AI on resource-constrained microcontrollers. By utilizing a lightweight Decision Tree classifier on the STM32F407ZGT6, the system achieved 91.2% real-world accuracy in classifying hydration states with a minimal memory footprint and zero reliance on cloud or internet connectivity. The stability observed during the 15-minute soak test confirms the reliability of the FreeRTOS task architecture in handling continuous sensor sampling, inference, and peripheral control simultaneously.
