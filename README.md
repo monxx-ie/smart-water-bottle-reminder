@@ -155,5 +155,5 @@ logs/             15-minute run log
 
 - Cassandra Khan P. Mendoza: firmware, data, training
 - Sean Marie G. Rabago: lab report Introduction, product concept, block diagram, and task 1
-- _: lab report
+- Carl Hovan B. Chan: lab report Results (Data Collection, Model Training, 80-Trial Test, 15-Min Run)
 - Shaqkobe Dos P. Tejada: demo video
