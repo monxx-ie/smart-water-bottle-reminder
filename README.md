@@ -24,6 +24,14 @@ Board file: `boards/rtspark.json` (copied from the PlatformIO `black_f407zg` man
 
 ## How it works
 
+## Activity Recognition Demo
+
+This video demonstrates the complete activity recognition flow:
+
+**RT-Spark → MQTT → Backend → Activity Classification → Mobile App**
+
+[▶ Watch the Activity Recognition Demo](documentation/activity_recognition_demo.mp4)
+
 1. The **sensor task** reads the IMU and light/proximity sensor every 20 ms (50 Hz) and sends samples into a queue.
 2. The **inference task** keeps a 2-second window (100 samples), computes 28 features (mean, standard deviation, min and max of the six IMU axes, accelerometer magnitude statistics, proximity maximum, mean light) and runs a decision tree once per second.
 3. The **reminder task** tracks the time since the last "drinking" prediction. After 30 seconds without drinking it beeps, then repeats every 10 seconds until you drink.
