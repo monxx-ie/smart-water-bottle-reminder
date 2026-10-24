@@ -26,7 +26,7 @@ def features(w):
     return f
 
 X_tr, y_tr, X_te, y_te = [], [], [], []
-for path in sorted(glob.glob("data/*.csv")):
+for path in sorted(glob.glob("data/*_0?.csv")):
     label, sess = os.path.basename(path)[:-4].split("_")
     d = pd.read_csv(path)[["ax", "ay", "az", "gx", "gy", "gz", "ps", "als"]].to_numpy(dtype=float)
     for s in range(0, len(d) - WIN + 1, WIN):
