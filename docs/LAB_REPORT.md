@@ -29,13 +29,11 @@ The **Smart Water Bottle Reminder** transforms an ordinary water bottle into a c
 
 ### 2.3 Alternative Ideas Considered
 
-**[CONFIRM: edit this table if the team considered different alternatives.]**
-
 | Alternative | Why not chosen |
 |---|---|
 | **Fall / drop detector** for a bottle or small object | Only two useful states (still vs. dropped). A drop is hard to repeat safely and often, so we could not collect enough test data. |
 | **Desk posture / sedentary reminder** (IMU + light) | The board sits on a desk, not on the body, so the sensors cannot observe posture. |
-| **Smart Water Bottle Reminder (chosen)** | Four states we can repeat safely 20+ times each, uses the IMU and the proximity/light sensor directly, and the output (a reminder) is easy to observe. |
+| **Smart Water Bottle Reminder (chosen)** | Four states we can repeat safely 20+ times each, uses the IMU motion data directly, and the output (a reminder) is easy to observe. |
 
 ### 2.4 Component-to-Function Matrix
 
