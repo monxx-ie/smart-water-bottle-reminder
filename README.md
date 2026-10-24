@@ -24,6 +24,10 @@ Board file: `boards/rtspark.json` (copied from the PlatformIO `black_f407zg` man
 
 ## How it works
 
+## Water Bottle Reminder Demo
+
+[▶ Watch the Water Bottle Reminder Demo](docs/water_bottle_reminder_demo.mp4)
+
 1. The **sensor task** reads the IMU and light/proximity sensor every 20 ms (50 Hz) and sends samples into a queue.
 2. The **inference task** keeps a 2-second window (100 samples), computes 28 features (mean, standard deviation, min and max of the six IMU axes, accelerometer magnitude statistics, proximity maximum, mean light) and runs a decision tree once per second.
 3. The **reminder task** tracks the time since the last "drinking" prediction. After 30 seconds without drinking it beeps, then repeats every 10 seconds until you drink.
@@ -51,7 +55,7 @@ Shared-data protection: two queues (samples, results), a mutex for the UART, a m
 - Split by recording, so windows from one recording never appear in both training and test sets. Training uses sessions 1, 2, 4 and 6 (40 windows per class); testing uses sessions 3 and 5 (20 windows per class).
 - Decision tree, depth 5. **Held-out accuracy 95%** (baseline that always guesses the most common class: 25%).
 
-![Confusion matrix](ml/confusion_matrix.png)
+![Confusion matrix](docs/confusion_matrix.png)
 
 ### Live trials on the board (`tools/trial.py`, `data/trials.csv`)
 80 trials, 20 per state, 6 seconds each. These ran on the earlier 16 MHz build; the model, features and window length are unchanged in the final 168 MHz build.
@@ -150,6 +154,6 @@ logs/             15-minute run log
 ## Team
 
 - Cassandra Khan P. Mendoza: firmware, data, training
-- _: lab report
-- _: lab report
-- _: demo video
+- Sean Marie G. Rabago: lab report Introduction, product concept, block diagram, and task 1
+- Carl Hovan B. Chan: lab report Results (Data Collection, Model Training, 80-Trial Test, 15-Min Run)
+- Shaqkobe Dos P. Tejada: demo video
