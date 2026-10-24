@@ -122,7 +122,7 @@ The firmware used for the 15-minute run measured 22,096 B Flash and 51,660 B RAM
 - Carried and shaken are sometimes mistaken for drinking, so a drink can be reported by mistake and reset the reminder timer.
 - The live trials were run on the earlier 16 MHz build and not repeated at 168 MHz.
 - A simple rule matches the tree on our small test set, so machine learning has not clearly added value here yet. We did not test other people or other bottles.
-- Pressing RST in the middle of an IMU read can leave the IMU holding the I2C bus (`init: IMU FAIL`). Unplug and replug USB to recover.
+- Pressing RST in the middle of an IMU read can leave the IMU holding the I2C bus (`init: IMU=FAIL`). Unplug and replug USB to recover.
 
 ## Build and run
 
@@ -173,7 +173,7 @@ The Python tools use COM3. Change `PORT` at the top of each script if your board
 | FreeRTOS builds the wrong port | `lib/FreeRTOS/library.json` selects only the Cortex-M4F port and `heap_4.c`. |
 | Serial text is garbled | The clock is wrong. Check `src/clock.c` and `-DHSE_VALUE=8000000U` in `platformio.ini`. |
 | OpenOCD `init failed` on upload | The board is not plugged in, or the USB cable is in the wrong port. Plug it into the ST-LINK port and try again. |
-| `init: IMU FAIL` after pressing RST | The IMU is stuck. Unplug the USB cable, wait 5 s, and plug it in again. |
+| `init: IMU=FAIL` after pressing RST | The IMU is stuck. Unplug the USB cable, wait 5 s, and plug it in again. |
 
 ## License and attribution
 
