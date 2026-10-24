@@ -1,0 +1,55 @@
+=== Majority-class baseline: accuracy 0.250 ===
+              precision    recall  f1-score   support
+
+     resting       0.00      0.00      0.00        20
+     carried       0.25      1.00      0.40        20
+    drinking       0.00      0.00      0.00        20
+      shaken       0.00      0.00      0.00        20
+
+    accuracy                           0.25        80
+   macro avg       0.06      0.25      0.10        80
+weighted avg       0.06      0.25      0.10        80
+
+confusion matrix (rows = true, cols = predicted; order: resting, carried, drinking, shaken)
+[[ 0 20  0  0]
+ [ 0 20  0  0]
+ [ 0 20  0  0]
+ [ 0 20  0  0]]
+
+=== Threshold-rule baseline: accuracy 0.975 ===
+              precision    recall  f1-score   support
+
+     resting       1.00      1.00      1.00        20
+     carried       0.95      1.00      0.98        20
+    drinking       1.00      0.90      0.95        20
+      shaken       0.95      1.00      0.98        20
+
+    accuracy                           0.97        80
+   macro avg       0.98      0.97      0.97        80
+weighted avg       0.98      0.97      0.97        80
+
+confusion matrix (rows = true, cols = predicted; order: resting, carried, drinking, shaken)
+[[20  0  0  0]
+ [ 0 20  0  0]
+ [ 0  1 18  1]
+ [ 0  0  0 20]]
+
+=== Decision tree (deployed): accuracy 0.950 ===
+              precision    recall  f1-score   support
+
+     resting       1.00      1.00      1.00        20
+     carried       0.94      0.85      0.89        20
+    drinking       0.86      0.95      0.90        20
+      shaken       1.00      1.00      1.00        20
+
+    accuracy                           0.95        80
+   macro avg       0.95      0.95      0.95        80
+weighted avg       0.95      0.95      0.95        80
+
+confusion matrix (rows = true, cols = predicted; order: resting, carried, drinking, shaken)
+[[20  0  0  0]
+ [ 0 17  3  0]
+ [ 0  1 19  0]
+ [ 0  0  0 20]]
+
+train windows: 160   test windows: 80
