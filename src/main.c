@@ -40,6 +40,8 @@ typedef struct {
 } snap_t;
 static snap_t snap;
 static SemaphoreHandle_t snap_mutex;
+static volatile int diag_mode = 0;    /* 1 = diagnostics screen shown */
+static volatile int diag_rerun = 0;   /* 1 = re-run flash/Wi-Fi/SD checks */
 
 extern void xPortSysTickHandler(void);
 
@@ -492,6 +494,115 @@ static void infer_task(void *arg)
     }
 }
 
+/* ---------- Diagnostics: external flash, Wi-Fi module, SD slot, codec ----------
+   SPI2 bus shared by flash and Wi-Fi: SCK PB13, MISO PC2, MOSI PC3
+   Flash W25Q128 CS PB12.  Wi-Fi RW007: CS PF10, RST PG15, INT PG11.
+   SD slot card-detect PF3.  Audio codec on I2C bus A, address 0x10. */
+typedef struct {
+    int codec_ok;
+    uint32_t flash_id;
+    int wifi_ok, wifi_int_before, wifi_int_after;
+    int sd_present, sd_cd_level;
+} diag_t;
+static diag_t diag;
+
+#define FL_CS(v)     HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define WF_CS(v)     HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define WF_RST(v)    HAL_GPIO_WritePin(GPIOG, GPIO_PIN_15, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define SPI_SCK(v)   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_13, (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define SPI_MOSI(v)  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3,  (v) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+#define SPI_MISO()   (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_2) == GPIO_PIN_SET)
+#define WF_INT()     (HAL_GPIO_ReadPin(GPIOG, GPIO_PIN_11) == GPIO_PIN_SET)
+#define SD_CD()      (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_3) == GPIO_PIN_SET)
+
+static void diag_gpio_init(void)
+{
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOF_CLK_ENABLE();
+    __HAL_RCC_GPIOG_CLK_ENABLE();
+    GPIO_InitTypeDef g = {0};
+    g.Mode = GPIO_MODE_OUTPUT_PP;
+    g.Pull = GPIO_NOPULL;
+    g.Speed = GPIO_SPEED_FREQ_LOW;
+    g.Pin = GPIO_PIN_12 | GPIO_PIN_13; HAL_GPIO_Init(GPIOB, &g);
+    g.Pin = GPIO_PIN_3;                HAL_GPIO_Init(GPIOC, &g);
+    g.Pin = GPIO_PIN_10;               HAL_GPIO_Init(GPIOF, &g);
+    g.Pin = GPIO_PIN_15;               HAL_GPIO_Init(GPIOG, &g);
+    FL_CS(1); WF_CS(1); SPI_SCK(0); SPI_MOSI(0); WF_RST(1);
+
+    g.Mode = GPIO_MODE_INPUT;
+    g.Pull = GPIO_PULLUP;
+    g.Pin = GPIO_PIN_2; HAL_GPIO_Init(GPIOC, &g);     /* MISO */
+    g.Pin = GPIO_PIN_3; HAL_GPIO_Init(GPIOF, &g);     /* SD card detect */
+    g.Pull = GPIO_NOPULL;
+    g.Pin = GPIO_PIN_11; HAL_GPIO_Init(GPIOG, &g);    /* Wi-Fi INT */
+}
+
+static uint8_t spi_xfer(uint8_t v)
+{
+    uint8_t in = 0;
+    for (int i = 7; i >= 0; i--) {
+        SPI_MOSI((v >> i) & 1);
+        delay_us(1);
+        SPI_SCK(1);
+        delay_us(1);
+        in = (uint8_t)((in << 1) | (SPI_MISO() ? 1 : 0));
+        SPI_SCK(0);
+        delay_us(1);
+    }
+    return in;
+}
+
+static uint32_t flash_read_id(void)
+{
+    WF_CS(1);
+    FL_CS(0);
+    delay_us(2);
+    spi_xfer(0x9F);                       /* JEDEC ID */
+    uint32_t id = (uint32_t)spi_xfer(0) << 16;
+    id |= (uint32_t)spi_xfer(0) << 8;
+    id |= spi_xfer(0);
+    FL_CS(1);
+    return id;
+}
+
+static void wifi_test(void)
+{
+    WF_RST(0);
+    for (int i = 0; i < 20; i++) delay_us(1000);
+    diag.wifi_int_before = WF_INT();
+    WF_RST(1);
+    int seen = 0;
+    for (int i = 0; i < 2000 && !seen; i++) {
+        delay_us(1000);
+        if (WF_INT() != diag.wifi_int_before) seen = 1;
+    }
+    diag.wifi_int_after = WF_INT();
+    diag.wifi_ok = seen;
+}
+
+static void diag_spi_checks(void)
+{
+    diag.flash_id = flash_read_id();
+    diag.sd_cd_level = SD_CD();
+    diag.sd_present = !diag.sd_cd_level;
+    wifi_test();
+    log_printf("DIAG flash_id=%06lX wifi=%s (INT %d->%d) sd=%s (CD=%d)\r\n",
+               (unsigned long)diag.flash_id, diag.wifi_ok ? "READY" : "NO RESPONSE",
+               diag.wifi_int_before, diag.wifi_int_after,
+               diag.sd_present ? "CARD IN" : "NO CARD", diag.sd_cd_level);
+}
+
+static void diag_boot(void)
+{
+    diag_gpio_init();
+    i2c_init(&bus_a);
+    diag.codec_ok = (i2c_send(&bus_a, 0x10, NULL, 0) == 0);
+    log_printf("DIAG codec(0x10)=%s\r\n", diag.codec_ok ? "OK" : "NO ACK");
+    diag_spi_checks();
+}
+
 /* ---------- Reminder: tracks time since last drinking ---------- */
 static void reminder_task(void *arg)
 {
@@ -502,8 +613,19 @@ static void reminder_task(void *arg)
     int beeped = 0;
 
     for (;;) {
-        if (xQueueReceive(q_results, &r, portMAX_DELAY) != pdTRUE) continue;
+        int got = (xQueueReceive(q_results, &r, pdMS_TO_TICKS(100)) == pdTRUE);
         TickType_t now = xTaskGetTickCount();
+
+        if (ulTaskNotifyTake(pdTRUE, 0) > 0) {          /* LEFT button: acknowledge / reset */
+            last_drink = now;
+            beeped = 0;
+            xSemaphoreTake(snap_mutex, portMAX_DELAY);
+            snap.since_drink_s = 0;
+            snap.overdue = 0;
+            xSemaphoreGive(snap_mutex);
+            log_printf("[%lu ms] ACK: reminder reset by button\r\n", (unsigned long)now);
+        }
+        if (!got) continue;
 
         if (r.cls == CLS_DRINKING) {
             last_drink = now;
@@ -716,21 +838,68 @@ static uint16_t state_color(int c)
     }
 }
 
+static void lcd_diag_screen(const snap_t *s)
+{
+    RTC_TimeTypeDef tm;
+    RTC_DateTypeDef dt;
+    HAL_RTC_GetTime(&hrtc, &tm, RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(&hrtc, &dt, RTC_FORMAT_BIN);
+    diag.sd_cd_level = SD_CD();
+    diag.sd_present = !diag.sd_cd_level;
+    int fl_ok = ((diag.flash_id >> 16) == 0xEF);   /* Winbond */
+
+    lcd_line(34,  (s->imu_ok && s->als_ok) ? COL_GOOD : COL_ERR, "IMU %s  ALS %s",
+             s->imu_ok ? "OK" : "ERR", s->als_ok ? "OK" : "ERR");
+    lcd_line(56,  (s->aht_ok && diag.codec_ok) ? COL_GOOD : COL_ERR, "AHT %s CODEC %s",
+             s->aht_ok ? "OK" : "ERR", diag.codec_ok ? "OK" : "ERR");
+    lcd_line(78,  fl_ok ? COL_GOOD : COL_ERR, "FLASH %06lX %s",
+             (unsigned long)diag.flash_id, fl_ok ? "OK" : "ERR");
+    lcd_line(100, diag.wifi_ok ? COL_GOOD : COL_ERR, "WIFI RW007 %s",
+             diag.wifi_ok ? "READY" : "NO RESP");
+    lcd_line(122, COL_YEL, "SD %s", diag.sd_present ? "CARD IN" : "NO CARD");
+    lcd_line(144, COL_GOOD, "RTC %02u:%02u:%02u %s", (unsigned)tm.Hours, (unsigned)tm.Minutes,
+             (unsigned)tm.Seconds, rtc_src_lse ? "LSE" : "LSI");
+    lcd_line(166, COL_GOOD, "LCD ST7789 240X240");
+    lcd_line(200, COL_DIM, "L:ACK D:RUN R:BACK");
+}
+
 static void lcd_task(void *arg)
 {
     (void)arg;
     lcd_init();
     lcd_fill(0, 0, LCD_W, LCD_H, COL_BG);
-    lcd_text(12, 8, "WATER BOTTLE", 3, COL_TITLE, COL_BG);
-    lcd_text(4, 40, "RT-SPARK EDGE AI", 2, COL_DIM, COL_BG);
     HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);     /* backlight on */
 
+    int shown = -1;
     TickType_t last = xTaskGetTickCount();
     for (;;) {
         snap_t s;
         xSemaphoreTake(snap_mutex, portMAX_DELAY);
         s = snap;
         xSemaphoreGive(snap_mutex);
+
+        int dm = diag_mode;
+        if (dm != shown) {                       /* screen changed: redraw title */
+            lcd_fill(0, 0, LCD_W, LCD_H, COL_BG);
+            if (dm) {
+                lcd_text(12, 6, "DIAGNOSTICS", 3, COL_TITLE, COL_BG);
+            } else {
+                lcd_text(12, 8, "WATER BOTTLE", 3, COL_TITLE, COL_BG);
+                lcd_text(4, 40, "RT-SPARK EDGE AI", 2, COL_DIM, COL_BG);
+            }
+            shown = dm;
+        }
+
+        if (dm) {
+            if (diag_rerun) {
+                diag_rerun = 0;
+                lcd_line(200, COL_YEL, "RUNNING CHECKS...");
+                diag_spi_checks();
+            }
+            lcd_diag_screen(&s);
+            vTaskDelayUntil(&last, pdMS_TO_TICKS(500));
+            continue;
+        }
 
         char b[24];
         if (s.have_cls) {
@@ -891,7 +1060,15 @@ static void button_task(void *arg)
             int now = HAL_GPIO_ReadPin(btns[i].port, btns[i].pin) == GPIO_PIN_SET;
             if (now != prev[i]) {
                 prev[i] = now;
-                if (i == 3 && !now) xTaskNotifyGive(h_buz);   /* UP pressed -> beep */
+                if (!now) {                                   /* on press */
+                    if (i == 3) xTaskNotifyGive(h_buz);       /* UP: buzzer test */
+                    if (i == 0) {                             /* LEFT: acknowledge / reset reminder */
+                        xTaskNotifyGive(h_rem);
+                        xTaskNotifyGive(h_buz);
+                    }
+                    if (i == 2) diag_mode = !diag_mode;       /* RIGHT: diagnostics screen on/off */
+                    if (i == 1) diag_rerun = 1;               /* DOWN: re-run flash/Wi-Fi/SD checks */
+                }
                 log_printf("[%lu ms] button %s %s\r\n",
                            (unsigned long)xTaskGetTickCount(), btns[i].name,
                            now ? "released" : "pressed");
@@ -946,6 +1123,7 @@ int main(void)
     q_results = xQueueCreate(8, sizeof(result_t));
 
     log_printf("\r\nRT-Spark bottle: on-device inference starting\r\n");
+    diag_boot();
 
     xTaskCreate(led_task,      "led",      192, NULL, 1, &h_led);
     xTaskCreate(buzzer_task,   "buzzer",   384, NULL, 2, &h_buz);
@@ -953,7 +1131,7 @@ int main(void)
     xTaskCreate(reminder_task, "reminder", 384, NULL, 2, &h_rem);
     xTaskCreate(sensor_task,   "sensors",  512, NULL, 3, &h_sens);
     xTaskCreate(infer_task,    "infer",    512, NULL, 4, &h_inf);
-    xTaskCreate(lcd_task,      "lcd",      512, NULL, 1, &h_lcd);
+    xTaskCreate(lcd_task,      "lcd",      640, NULL, 1, &h_lcd);
     xTaskCreate(monitor_task,  "monitor",  384, NULL, 1, &h_mon);
 
     vTaskStartScheduler();
