@@ -19,7 +19,7 @@ This laboratory activity presents the **Smart Water Bottle Reminder**, an autono
 ### 2.1 Overview & Value Proposition
 The **Smart Water Bottle Reminder** transforms an ordinary water bottle into a context-aware hydration assistant. Rather than alerting the user on a blind timer, the embedded Edge AI model understands how the bottle is being handled in real time:
 * **Context-Aware Tracking:** Differentiates between a bottle sitting on a desk (*resting*), walking in a bag or hand (*carried*), being actively sipped (*drinking*), or being mixed/fidgeted with (*shaken*).
-* **100% On-Device Edge AI:** Inference runs locally in **154 µs** using only **2.1% Flash (22,096 B)** and **39.4% RAM (51,660 B)**, demonstrating that responsive machine learning can operate entirely on a resource-constrained microcontroller.
+* **100% On-Device Edge AI:** Inference runs locally in **154 µs** using about **24 KB of Flash (roughly 2%)** and **51.7 KB of RAM (39.5%)** for the application and model, demonstrating that responsive machine learning can operate entirely on a resource-constrained microcontroller.
 * **Repeating Alerts:** If 30 seconds pass without a detected *drinking* event, the system flashes `"DRINK WATER NOW!"` on the onboard 240×240 LCD and sounds the buzzer, repeating every 10 seconds until the user takes a drink or presses LEFT to acknowledge.
 
 ### 2.2 Target User Workflow
@@ -210,7 +210,7 @@ The firmware is structured around **8 concurrent FreeRTOS tasks** using preempti
 Data for the four target states (resting, carried, drinking, and shaken) was gathered using the `collect.py` script. The IMU sampling interval was verified to have a constant mean of 20.0 ms (minimum 19 ms, maximum 21 ms), generating roughly 500 samples every 10 seconds (50 Hz).
 
 ### 5.2 Model Training
-A Decision Tree classifier was trained using 40 training windows and 20 test windows per class. The model achieved a 95.0% accuracy on the test set, vastly outperforming the 25.0% baseline. The top three features weighted by the decision tree were `ax_max` (0.333), `mag_std` (0.333), and `ax_mean` (0.287). Proximity and light are not used by the tree. Three of its five features (`ax_mean`, `ax_max`, `az_max`) depend on how the bottle is oriented, which is a risk for new users and bottles.
+A Decision Tree classifier was trained using 40 training windows and 20 test windows per class. The model achieved a 95.0% accuracy on the test set, well above the 25.0% majority-class baseline (the simple rule baseline scored slightly higher, see 5.7). The top three features weighted by the decision tree were `ax_max` (0.333), `mag_std` (0.333), and `ax_mean` (0.287). Proximity and light are not used by the tree. Three of its five features (`ax_mean`, `ax_max`, `az_max`) depend on how the bottle is oriented, which is a risk for new users and bottles.
 
 ![Training Confusion Matrix](confusion_matrix.png)
 
