@@ -303,9 +303,8 @@ The Smart Water Bottle Reminder successfully demonstrates the feasibility of run
 3. FreeRTOS. *Kernel Documentation (Mastering the FreeRTOS Real Time Kernel).* https://www.freertos.org/Documentation/RTOS_book.html. Used for the task, queue, mutex, task-notification and `vTaskDelayUntil` design, and the Cortex-M4F port (V11.1.0, `heap_4`).
 4. STMicroelectronics. *STM32CubeF4 firmware and STM32F407 technical documentation.* https://www.st.com/en/embedded-software/stm32cubef4.html. Used for the HAL drivers, clock tree (HSE 8 MHz, PLL to 168 MHz) and FSMC, RTC and GPIO configuration.
 5. RT-Thread. *RT-Spark (Spark-1) board schematic* (`星火1号开发板原理图_V1_0.pdf`), from the board's public SDK repository https://github.com/RT-Thread-Studio/sdk-bsp-stm32f407-spark (docs folder). Used for wiring and pinout only: SPI2 flash and RW007 Wi-Fi pins, SD card-detect, SDIO, I2C and button pins.
-6. Module datasheets, used for register maps and electrical specifications only: ICM-20608 (IMU), AP3216C (ambient light and proximity), AHT20/AHT21 (temperature and humidity), Winbond W25Q-series SPI flash (JEDEC ID read), and the RT-Thread RW007 Wi-Fi module. **[CONFIRM: add the exact datasheet titles or links the team used.]**
-7. scikit-learn developers. *Decision Trees.* https://scikit-learn.org/stable/modules/tree.html. Used to train the depth-5 classifier (`ml/train.py`) and the baseline comparison (`ml/baseline.py`).
-8. Project files. Code, data manifest and evidence: https://github.com/monxx-ie/smart-water-bottle-reminder
+6. scikit-learn developers. *Decision Trees.* https://scikit-learn.org/stable/modules/tree.html. Used to train the depth-5 classifier (`ml/train.py`) and the baseline comparison (`ml/baseline.py`).
+7. Project files. Code, data manifest and evidence: https://github.com/monxx-ie/smart-water-bottle-reminder
 
 All code in this repository was written by the team for this activity. Third-party components used: FreeRTOS kernel (MIT license), STM32Cube HAL (ST license, as supplied by PlatformIO), scikit-learn, NumPy and pandas (BSD licenses). The project itself is released under the MIT license.
 
